@@ -46,6 +46,11 @@ jspm_packages/
 /.pnp
 .pnp.js
 
+# eslint
+.eslintcache
+
+# testing
+/coverage
 
 # TypeScript v1 declaration files
 typings/
