@@ -1,5 +1,5 @@
-import { JumbotronContainer } from '../containers/jumbotron'
-import LiveBlogContainr from '../containers/live-blog'
+import { JumbotronContainer } from '../../containers/jumbotron'
+import LiveBlogContainr from '../../containers/live-blog'
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyles = createGlobalStyle`
@@ -8,7 +8,7 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 
-export default function Home() {
+export default function LiveBlog() {
   return (
     <>
       <div id="light-box-root" />
