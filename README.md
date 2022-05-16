@@ -8,9 +8,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Liveblog
+
+Since this project will contain multiple independent page, check [http://localhost:3000/liveblog](http://localhost:3000) for the Liveblog page.
