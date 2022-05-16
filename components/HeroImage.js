@@ -4,7 +4,7 @@ export default function HeroImage() {
   return (
     <div>
       <Image
-        src="/images/hero-image.png"
+        src="/images/liveblog-hero-image.png"
         width="1440"
         height="484"
         layout="responsive"
