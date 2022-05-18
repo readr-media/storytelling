@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "htmlparser2": "^7.2.0",
+    "cors": "^2.8.5",
     "draft-js": "^0.11.7",
+    "htmlparser2": "^7.2.0",
     "moment": "^2.29.3",
     "next": "12.1.6",
     "react": "18.1.0",
