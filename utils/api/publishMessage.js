@@ -1,5 +1,6 @@
 import { PubSub } from '@google-cloud/pubsub'
 import { projectId, topicNameOrId } from '../../utils/api/config'
+import { object, string, number, date, mixed } from 'yup'
 
 const pubSubClient = new PubSub({ projectId })
 
@@ -8,27 +9,32 @@ export default async function publishMessage(jsonData) {
   /*
     jsonData format
     {
+      'name': <username_string>,
       'form': <form_id_string>,
       'ip': <ip_address_string>,
       'responseTime': <date_string>,
-      'result': [
-        {
-          field: <field_id_string>,
-          userFeedback: <feedback_value>
-        },
-        {
-          field: <field_id_string>,
-          userFeedback: <feedback_value>
-        },
-        ...
-      ]
+      'field': <field_number>,
+      'userFeedback': <feedback_value>
     }
   */
 
+  const formSchema = object({
+    name: string().required(),
+    from: string().required(),
+    ip: string().required(),
+    responseTime: date().required(),
+    field: number().positive().required(),
+    userFeedback: mixed().required(),
+  })
+
   try {
+    const validateData = await formSchema.validate(jsonData, {
+      stripUnknown: true,
+    })
+
     const messageId = await pubSubClient
       .topic(topicNameOrId)
-      .publishMessage({ json: jsonData })
+      .publishMessage({ json: validateData })
     console.log(`Message ${messageId} published.`)
     return true
   } catch (error) {
