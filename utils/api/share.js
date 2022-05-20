@@ -10,3 +10,10 @@ export async function runMiddleware(req, res, fn) {
     })
   })
 }
+
+// get ip address from request
+export function getRequestIp(req) {
+  const forwarded = req.headers['x-forwarded-for']
+  const ip = forwarded ? forwarded.split(/, /)[0] : req.connection.remoteAddress
+  return ip
+}

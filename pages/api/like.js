@@ -1,12 +1,11 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
 import publishMessage from '../../utils/api/publishMessage'
+import { runMiddleware } from '../../utils/api/share'
 
 const cors = CORS({
   methods: ['HEAD', 'PUT'],
 })
-
-import { runMiddleware } from '../../utils/api/share'
 
 // default handler
 async function handler(req, res) {
@@ -14,7 +13,7 @@ async function handler(req, res) {
 
   async function PUT() {
     // publish message to PubSub
-    const result = await publishMessage(req.body)
+    const result = await publishMessage(req)
 
     if (result === true) {
       res.status(200).json({})

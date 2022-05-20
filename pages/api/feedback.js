@@ -30,7 +30,7 @@ async function handler(req, res) {
     }
 
     // publish message to PubSub
-    const result = await publishMessage(req.body)
+    const result = await publishMessage(req)
 
     if (result === true) {
       res.status(200).json({})
