@@ -4,6 +4,7 @@ import publishMessage from '../../utils/api/publishMessage'
 import createAssessment from '../../utils/api/createAssessment'
 import { runMiddleware } from '../../utils/api/share'
 import { projectId } from '../../utils/api/config'
+import { getFeedback } from '../../utils/api/getFeedback'
 
 const recaptchaSiteKey = '6LeHLAEgAAAAADb0pcN6CVZdgD7KFDtCFElRu-f7'
 const recaptchaScoreBoundary = 0.7
@@ -40,8 +41,14 @@ async function handler(req, res) {
   }
 
   async function GET() {
-    // get feedbacks from keystone
-    res.status(200).json({ message: 'empty' })
+    // get feedback from keystone
+    const result = await getFeedback(req)
+
+    if (typeof result === 'string') {
+      res.status(400).json({ message: result })
+    } else {
+      res.status(200).json(result)
+    }
   }
 
   await globalAPICall(req, res, { POST, GET })
