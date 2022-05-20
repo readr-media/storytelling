@@ -5,28 +5,16 @@ import { getRequestIp } from './share'
 
 const pubSubClient = new PubSub({ projectId })
 
+const formSchema = object({
+  name: string().required(),
+  from: string().required(),
+  responseTime: date().required(),
+  field: number().positive().integer().required(),
+  userFeedback: mixed().required(),
+})
+
 // publish message to Google PubSub
 export default async function publishMessage(req) {
-  /*
-    jsonData format
-    {
-      'name': <username_string>,
-      'form': <form_id_string>,
-      'ip': <ip_address_string>,
-      'responseTime': <date_string>,
-      'field': <field_number>,
-      'userFeedback': <feedback_value>
-    }
-  */
-
-  const formSchema = object({
-    name: string().required(),
-    from: string().required(),
-    responseTime: date().required(),
-    field: number().positive().required(),
-    userFeedback: mixed().required(),
-  })
-
   const jsonData = req.body
 
   try {
