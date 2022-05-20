@@ -1,8 +1,6 @@
 import { PubSub } from '@google-cloud/pubsub'
+import { projectId, topicNameOrId } from '../../utils/api/config'
 
-const projectId = process.env.PROJECT_ID || 'mirrorlearning-161006'
-const topicNameOrId =
-  process.env.PUBSUB_COVID19_QUERY_NAME || 'readr-project-covid19-query'
 const pubSubClient = new PubSub({ projectId })
 
 // publish message to Google PubSub
@@ -26,6 +24,7 @@ export default async function publishMessage(jsonData) {
       ]
     }
   */
+
   try {
     const messageId = await pubSubClient
       .topic(topicNameOrId)

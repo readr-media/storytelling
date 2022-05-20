@@ -18,9 +18,9 @@ export default async function globalAPICall(req, res, actions) {
     await actions[method]()
   } catch (err) {
     if (err instanceof CustomError) {
-      res.status(err.code).send(err.message)
+      res.status(err.code).json({ message: err.message })
     } else {
-      res.status(500).send('Internal server error')
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
