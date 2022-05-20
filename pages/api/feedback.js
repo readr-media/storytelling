@@ -2,27 +2,15 @@ import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
 import publishMessage from '../../utils/api/publishMessage'
 import createAssessment from '../../utils/api/createAssessment'
+import { runMiddleware } from '../../utils/api/share'
 import { projectId } from '../../utils/api/config'
-
-const cors = CORS({
-  methods: ['HEAD', 'GET', 'POST'],
-})
 
 const recaptchaSiteKey = '6LeHLAEgAAAAADb0pcN6CVZdgD7KFDtCFElRu-f7'
 const recaptchaScoreBoundary = 0.7
 
-// use helper function to run middleware
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
-
-      return resolve(result)
-    })
-  })
-}
+const cors = CORS({
+  methods: ['HEAD', 'GET', 'POST'],
+})
 
 // default handler
 async function handler(req, res) {
@@ -47,7 +35,7 @@ async function handler(req, res) {
     if (result === true) {
       res.status(200).json({})
     } else {
-      res.status(503).json({ message: result })
+      res.status(400).json({ message: result })
     }
   }
 
