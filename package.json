@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^2.19.4",
+    "@google-cloud/recaptcha-enterprise": "^3.0.0",
     "cors": "^2.8.5",
     "draft-js": "^0.11.7",
     "htmlparser2": "^7.2.0",
