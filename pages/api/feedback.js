@@ -3,11 +3,16 @@ import globalAPICall from '../../utils/api/globalAPICall'
 import publishMessage from '../../utils/api/publishMessage'
 import createAssessment from '../../utils/api/createAssessment'
 import { runMiddleware } from '../../utils/api/share'
-import { projectId } from '../../utils/api/config'
+import {
+  projectId,
+  feedbackFormName,
+  feedbackFieldName,
+  recaptchaSiteKey,
+  recaptchaScoreBoundary,
+} from '../../utils/api/config'
 import { getFeedback } from '../../utils/api/getFeedback'
 
-const recaptchaSiteKey = '6LeHLAEgAAAAADb0pcN6CVZdgD7KFDtCFElRu-f7'
-const recaptchaScoreBoundary = 0.7
+console.log(recaptchaScoreBoundary)
 
 const cors = CORS({
   methods: ['HEAD', 'GET', 'POST'],
@@ -42,7 +47,7 @@ async function handler(req, res) {
 
   async function GET() {
     // get feedback from keystone
-    const result = await getFeedback(req)
+    const result = await getFeedback(feedbackFormName, feedbackFieldName, req)
 
     if (typeof result === 'string') {
       res.status(400).json({ message: result })

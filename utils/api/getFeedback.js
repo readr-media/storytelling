@@ -2,8 +2,6 @@ import { getQueryResult } from '../../utils/api/getQueryResult'
 import { getFeedback as getFeedbackQuery } from '../../graphql/query'
 import { object, number } from 'yup'
 
-const formName = 'feedback-comment'
-const fiedlName = '跟大家分享你的經驗'
 const querySchema = object({
   skip: number().optional().integer().default(0),
   take: number().when('skip', {
@@ -13,7 +11,7 @@ const querySchema = object({
   }),
 })
 
-export async function getFeedback(req) {
+export async function getFeedback(formName, fieldlName, req) {
   try {
     const params = await querySchema.validate(req.params, {
       stripUnknown: true,
@@ -21,7 +19,7 @@ export async function getFeedback(req) {
 
     const queryParams = Object.assign(params, {
       formName,
-      fiedlName,
+      fieldlName,
     })
 
     const result = await getQueryResult(getFeedbackQuery, queryParams)
