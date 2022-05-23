@@ -14,6 +14,10 @@ export const keystoneAPIUrl =
 export const feedbackFormName = env.FEEDBACK_FORM_NAME || 'feedback-comment'
 export const feedbackFieldName = env.FEEDBACK_FIELD_NAME || '跟大家分享你的經驗'
 
+// like and dislike form
+export const likeFormName = env.LIKE_FORM_NAME || 'feedback-like'
+export const likeFieldName = env.LIKE_FIELD_NAME || '這個結果符合實際情況嗎？'
+
 // reCAPTCHA
 export const recaptchaSiteKey = env.RECAPTCHA_SITE_KEY || ''
 export const recaptchaScoreBoundary =
