@@ -24,5 +24,7 @@ There are some enviroment variables for API Endpoint customization.
 * `KEYSTONE_API_URL` : Keystone GraphQL API URL
 * `FEEDBACK_FORM_NAME` : form name used for user feedback
 * `FEEDBACK_FIELD_NAME` : field name in form for user feedback
+* `LIKE_FORM_NAME` : form name used for like and dislike
+* `LIKE_FIELD_NAME` : field name in form for like and dislike
 * `RECAPTCHA_SITE_KEY` : reCAPTCHA Enterprise site key
 * `RECAPTCHA_SCORE_BOUNDARY` : reCAPTCHA score assessment boundary, 0.1, 0.3, 0.7 and 0.9
