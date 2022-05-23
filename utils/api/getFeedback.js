@@ -11,7 +11,7 @@ const querySchema = object({
   }),
 })
 
-export async function getFeedback(formName, fieldlName, req) {
+export async function getFeedback(formName, fieldName, req) {
   try {
     const params = await querySchema.validate(req.params, {
       stripUnknown: true,
@@ -19,7 +19,7 @@ export async function getFeedback(formName, fieldlName, req) {
 
     const queryParams = Object.assign(params, {
       formName,
-      fieldlName,
+      fieldName,
     })
 
     const result = await getQueryResult(getFeedbackQuery, queryParams)
