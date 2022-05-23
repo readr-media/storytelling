@@ -1,6 +1,5 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
-import publishMessage from '../../utils/api/publishMessage'
 import createAssessment from '../../utils/api/createAssessment'
 import { runMiddleware } from '../../utils/api/share'
 import {
@@ -9,6 +8,7 @@ import {
   recaptchaScoreBoundary,
 } from '../../utils/api/config'
 import { getFeedback } from '../../utils/api/getDataFromStorage'
+import { addFeedback } from '../../utils/api/addDataToStorage'
 
 const cors = CORS({
   methods: ['HEAD', 'GET', 'POST'],
@@ -31,8 +31,8 @@ async function handler(req, res) {
       return res.status(401).json({ message: 'recaptach assessment failed' })
     }
 
-    // publish message to PubSub
-    const result = await publishMessage(req)
+    // add feedback to storage
+    const result = await addFeedback(req)
 
     if (result === true) {
       res.status(200).json({})
