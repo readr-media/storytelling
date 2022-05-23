@@ -1,16 +1,14 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
-import publishMessage from '../../utils/api/publishMessage'
 import createAssessment from '../../utils/api/createAssessment'
 import { runMiddleware } from '../../utils/api/share'
 import {
   projectId,
-  feedbackFormName,
-  feedbackFieldName,
   recaptchaSiteKey,
   recaptchaScoreBoundary,
 } from '../../utils/api/config'
-import { getFeedback } from '../../utils/api/getFeedback'
+import { getFeedback } from '../../utils/api/getDataFromStorage'
+import { addFeedback } from '../../utils/api/addDataToStorage'
 
 const cors = CORS({
   methods: ['HEAD', 'GET', 'POST'],
@@ -33,8 +31,8 @@ async function handler(req, res) {
       return res.status(401).json({ message: 'recaptach assessment failed' })
     }
 
-    // publish message to PubSub
-    const result = await publishMessage(req)
+    // add feedback to storage
+    const result = await addFeedback(req)
 
     if (result === true) {
       res.status(200).json({})
@@ -45,7 +43,7 @@ async function handler(req, res) {
 
   async function GET() {
     // get feedback from keystone
-    const result = await getFeedback(feedbackFormName, feedbackFieldName, req)
+    const result = await getFeedback(req)
 
     if (typeof result === 'string') {
       res.status(400).json({ message: result })

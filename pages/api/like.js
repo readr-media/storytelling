@@ -1,9 +1,8 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
-import publishMessage from '../../utils/api/publishMessage'
 import { runMiddleware } from '../../utils/api/share'
-import { getLikeAndDislikeAmount } from '../../utils/api/getLikeAndDislikeAmount'
-import { likeFormName, likeFieldName } from '../../utils/api/config'
+import { getLikeAndDislikeAmount } from '../../utils/api/getDataFromStorage'
+import { addLikeOrDislike } from '../../utils/api/addDataToStorage'
 
 const cors = CORS({
   methods: ['HEAD', 'PUT'],
@@ -14,8 +13,8 @@ async function handler(req, res) {
   await runMiddleware(req, res, cors)
 
   async function PUT() {
-    // publish message to PubSub
-    const result = await publishMessage(req)
+    // add like/dislike to storage
+    const result = await addLikeOrDislike(req)
 
     if (result === true) {
       res.status(200).json({})
@@ -24,8 +23,9 @@ async function handler(req, res) {
     }
   }
 
+  // get like and dislike amount
   async function GET() {
-    const result = await getLikeAndDislikeAmount(likeFormName, likeFieldName)
+    const result = await getLikeAndDislikeAmount()
 
     if (typeof result === 'string') {
       res.status(400).json({ message: result })

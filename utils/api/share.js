@@ -17,3 +17,6 @@ export function getRequestIp(req) {
   const ip = forwarded ? forwarded.split(/, /)[0] : req.connection.remoteAddress
   return ip
 }
+
+// truth values
+export const truthValue = ['true', 1, true]
