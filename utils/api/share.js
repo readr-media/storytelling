@@ -18,5 +18,12 @@ export function getRequestIp(req) {
   return ip
 }
 
+// add ip to data
+export async function addIpToData(request, data) {
+  const ip = await getRequestIp(request)
+  data.ip = ip
+  return data
+}
+
 // truth values
 export const truthValue = ['true', 1, true]

@@ -1,18 +1,14 @@
 import { PubSub } from '@google-cloud/pubsub'
 import { projectId, topicNameOrId } from '../../utils/api/config'
-import { getRequestIp } from './share'
 
 const pubSubClient = new PubSub({ projectId })
 
 // publish message to Google PubSub
-export default async function publishMessage(formSchema, jsonData, request) {
+export default async function publishMessage(formSchema, jsonData) {
   try {
     const validateData = await formSchema.validate(jsonData, {
       stripUnknown: true,
     })
-
-    const ip = await getRequestIp(request)
-    validateData.ip = ip
 
     const messageId = await pubSubClient
       .topic(topicNameOrId)
