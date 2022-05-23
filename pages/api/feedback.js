@@ -12,8 +12,6 @@ import {
 } from '../../utils/api/config'
 import { getFeedback } from '../../utils/api/getFeedback'
 
-console.log(recaptchaScoreBoundary)
-
 const cors = CORS({
   methods: ['HEAD', 'GET', 'POST'],
 })
