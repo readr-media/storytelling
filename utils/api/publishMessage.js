@@ -7,7 +7,7 @@ const pubSubClient = new PubSub({ projectId })
 
 const formSchema = object({
   name: string().required(),
-  from: string().required(),
+  form: string().required(),
   responseTime: date().required(),
   field: number().positive().integer().required(),
   userFeedback: mixed().required(),
