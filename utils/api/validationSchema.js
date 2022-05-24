@@ -23,3 +23,8 @@ export const likeFormSchema = object({
     })
     .required(),
 })
+
+export const validationSchema = object({
+  token: string().required(),
+  recaptchaAction: string().required(),
+})
