@@ -1,4 +1,4 @@
-import { truthValue } from './share'
+import { truthValue, cancelValue } from './share'
 import { object, string, number, date, boolean, mixed } from 'yup'
 
 export const feedbackFormSchema = object({
@@ -18,10 +18,17 @@ export const likeFormSchema = object({
   field: number().positive().integer().required(),
   userFeedback: boolean()
     .transform((value) => {
-      if (truthValue.includes(value)) return true
-      else return false
+      console.log(value)
+      if (truthValue.includes(value)) {
+        return true
+      } else if (cancelValue.includes(value)) {
+        return null
+      } else {
+        return false
+      }
     })
-    .required(),
+    .nullable()
+    .defined(),
 })
 
 export const validationSchema = object({
