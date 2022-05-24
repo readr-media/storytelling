@@ -1,7 +1,13 @@
 import gql from 'graphql-tag'
 
 export const getFeedback = gql`
-  query ($formName: String!, $fieldName: String!, $skip: Int, $take: Int) {
+  query (
+    $formName: String!
+    $fieldName: String!
+    $skip: Int
+    $take: Int
+    $order: FormResultOrderByInput!
+  ) {
     formResults(
       where: {
         AND: [
@@ -11,12 +17,16 @@ export const getFeedback = gql`
       }
       skip: $skip
       take: $take
+      orderBy: [$order]
     ) {
       id
       ip
       name
       result
       responseTime
+      form {
+        name
+      }
       field {
         name
       }

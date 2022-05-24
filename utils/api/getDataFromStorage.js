@@ -16,6 +16,9 @@ export async function getLikeAndDislikeAmount() {
     const queryParams = {
       formName: likeFormName,
       fieldName: likeFieldName,
+      order: {
+        createdAt: 'desc',
+      },
     }
 
     const {
@@ -69,6 +72,9 @@ export async function getFeedback(req) {
     const queryParams = Object.assign(params, {
       formName: feedbackFormName,
       fieldName: feedbackFieldName,
+      order: {
+        createdAt: 'desc',
+      },
     })
 
     const result = await getQueryResult(getFeedbackQuery, queryParams)
