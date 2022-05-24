@@ -1,13 +1,13 @@
 import { truthValue, cancelValue } from './share'
-import { object, string, number, date, boolean, mixed } from 'yup'
+import { object, string, date } from 'yup'
 
 export const feedbackFormSchema = object({
   name: string().required(),
   form: string().required(),
   ip: string().required(),
   responseTime: date().required(),
-  field: number().positive().integer().required(),
-  userFeedback: mixed().required(),
+  field: string().required(),
+  userFeedback: string().required(), // need to transform into string so that Python subscriber could handle properly
 })
 
 export const likeFormSchema = object({
@@ -15,16 +15,16 @@ export const likeFormSchema = object({
   form: string().required(),
   ip: string().required(),
   responseTime: date().required(),
-  field: number().positive().integer().required(),
-  userFeedback: boolean()
+  field: string().required(),
+  userFeedback: string()
     .transform((value) => {
-      console.log(value)
+      // need to transform into string expression so that Python subscriber could handle properly
       if (truthValue.includes(value)) {
-        return true
+        return 'true'
       } else if (cancelValue.includes(value)) {
-        return null
+        return 'null'
       } else {
-        return false
+        return 'false'
       }
     })
     .nullable()
