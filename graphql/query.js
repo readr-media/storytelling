@@ -12,6 +12,7 @@ export const getFeedback = gql`
       skip: $skip
       take: $take
     ) {
+      id
       ip
       name
       result
