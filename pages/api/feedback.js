@@ -1,12 +1,6 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
-import createAssessment from '../../utils/api/createAssessment'
 import { runMiddleware } from '../../utils/api/share'
-import {
-  projectId,
-  recaptchaSiteKey,
-  recaptchaScoreBoundary,
-} from '../../utils/api/config'
 import { getFeedback } from '../../utils/api/getDataFromStorage'
 import { addFeedback } from '../../utils/api/addDataToStorage'
 
@@ -19,18 +13,6 @@ async function handler(req, res) {
   await runMiddleware(req, res, cors)
 
   async function POST() {
-    // recaptcha assessment
-    const score = await createAssessment({
-      projectID: projectId,
-      recaptchaSiteKey,
-      token: req.body.token,
-      recaptchaAction: req.body.recaptchaAction,
-    })
-
-    if (score === null || score < recaptchaScoreBoundary) {
-      return res.status(401).json({ message: 'recaptach assessment failed' })
-    }
-
     // add feedback to storage
     const result = await addFeedback(req)
 

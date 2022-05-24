@@ -27,3 +27,6 @@ export async function addIpToData(request, data) {
 
 // truth values
 export const truthValue = ['true', 1, true]
+
+// cancel values
+export const cancelValue = ['null', 'undefined', null, undefined]
