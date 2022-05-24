@@ -1,7 +1,7 @@
 import { getQueryResult } from '../../utils/api/getQueryResult'
 import { getFeedback as getFeedbackQuery } from '../../graphql/query'
 import { object, number } from 'yup'
-import { truthValue } from './share'
+import { truthValue, cancelValue } from './share'
 import {
   likeFormName,
   likeFieldName,
@@ -36,6 +36,8 @@ export async function getLikeAndDislikeAmount() {
 
       if (truthValue.includes(result)) {
         amount.like += 1
+      } else if (cancelValue.includes(result)) {
+        // currently, do nothing
       } else {
         amount.dislike += 1
       }
