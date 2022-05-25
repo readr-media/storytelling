@@ -23,7 +23,6 @@ export const getFeedback = gql`
       id
       ip
       name
-      hidden
       result
       responseTime
       form {
