@@ -13,6 +13,7 @@ export const getFeedback = gql`
         AND: [
           { form: { name: { equals: $formName } } }
           { field: { name: { equals: $fieldName } } }
+          { hidden: { not: { equals: true } } }
         ]
       }
       skip: $skip
@@ -22,6 +23,7 @@ export const getFeedback = gql`
       id
       ip
       name
+      hidden
       result
       responseTime
       form {
