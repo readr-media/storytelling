@@ -13,6 +13,7 @@ export const getFeedback = gql`
         AND: [
           { form: { name: { equals: $formName } } }
           { field: { name: { equals: $fieldName } } }
+          { hidden: { not: { equals: true } } }
         ]
       }
       skip: $skip

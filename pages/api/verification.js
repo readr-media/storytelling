@@ -6,11 +6,13 @@ import {
   projectId,
   recaptchaSiteKey,
   recaptchaScoreBoundary,
+  corsOrigins,
 } from '../../utils/api/config'
 import { validationSchema } from '../../utils/api/validationSchema'
 
 const cors = CORS({
   methods: ['HEAD', 'POST'],
+  origin: corsOrigins,
 })
 
 // default handler

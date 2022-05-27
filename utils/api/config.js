@@ -1,6 +1,7 @@
 import 'dotenv/config'
 
 const { env } = process
+const delimiter = ','
 
 export const projectId = env.PROJECT_ID || 'mirrorlearning-161006'
 export const topicNameOrId =
@@ -22,3 +23,8 @@ export const likeFieldName = env.LIKE_FIELD_NAME || '這個結果符合實際情
 export const recaptchaSiteKey = env.RECAPTCHA_SITE_KEY || ''
 export const recaptchaScoreBoundary =
   Number(env.RECAPTCHA_SCORE_BOUNDARY) || 0.7
+
+// CORS origins
+export const corsOrigins = env.CORS_ORIGINS
+  ? env.CORS_ORIGINS.split(delimiter)
+  : ['http://localhost']
