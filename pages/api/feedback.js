@@ -3,9 +3,11 @@ import globalAPICall from '../../utils/api/globalAPICall'
 import { runMiddleware } from '../../utils/api/share'
 import { getFeedback } from '../../utils/api/getDataFromStorage'
 import { addFeedback } from '../../utils/api/addDataToStorage'
+import { corsOrigins } from '../../utils/api/config'
 
 const cors = CORS({
   methods: ['HEAD', 'GET', 'POST'],
+  origin: corsOrigins,
 })
 
 // default handler
