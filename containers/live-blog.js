@@ -16,6 +16,7 @@ export default function LiveBlogContainr() {
   const [showingCount, setShowingCount] = useState(initialShowingCount)
   const [showingLiveblogItems, setShowingLiveblogItems] = useState([])
   const [newToOld, setNewToOld] = useState(true)
+  const loadingMoreRef = useRef(false)
 
   // fetch liveblog json
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function LiveBlogContainr() {
 
     setBoostedLiveblogItems(boostedLiveblogItems)
     setShowingLiveblogItems(showingLiveblogItems)
+    loadingMoreRef.current = false
   }, [newToOld, showingCount])
 
   // handle loadmore
@@ -51,14 +53,17 @@ export default function LiveBlogContainr() {
     const loadMore = () => {
       const currentScrollingPoition =
         window.innerHeight + document.documentElement.scrollTop
+      // loose comparison to prevent exact match not easy to trigger under some situation
       const reachEnd =
-        currentScrollingPoition === document.scrollingElement.scrollHeight
+        currentScrollingPoition > document.scrollingElement.scrollHeight - 30
       const somethingLeftToShow =
         liveblogItemsRef.current.length -
           boostedLiveblogItems.length -
           showingLiveblogItems.length >
         0
-      if (reachEnd && somethingLeftToShow) {
+
+      if (reachEnd && somethingLeftToShow && !loadingMoreRef.current) {
+        loadingMoreRef.current = true
         console.log('increase showingCount')
         setShowingCount((showingCount) => showingCount + 5)
       }
