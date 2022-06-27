@@ -59,40 +59,45 @@ export default function LiveBlogItemContent({ article, expanded }) {
   const [contentHeight, setContentHeight] = useState(defaultContentHeight)
 
   useEffect(() => {
-    if (targetRef.current) {
-      /*
-      to limit the displaying contents' height not greater than defaultContentHeight
-      loop over draftjs contentBlock to check if accumulation of heights exceeds defaultContentHeight 
-      use accumulation of heights to prevent words cut in the middle
-      if 
-      */
-      console.log(targetRef.current)
-      const contentBlocks = [
-        ...targetRef.current.querySelectorAll('[data-block="true"]'),
-      ]
+    // delay to calculate in order to get the real DOM height
+    setTimeout(() => {
+      if (targetRef.current) {
+        /*
+        accumulate the height of contentBlocks to render the wrapper with height closest to the spec (5 lines)
+        and prevent words got cut vertically
+        */
+        const contentBlocks = [
+          ...targetRef.current.querySelectorAll('[data-block="true"]'),
+        ]
 
-      let accumulationHeight = 0
-      let lastMarginBottom = 0
+        let accumulationHeight = 0
+        let lastMarginBottom = 0
 
-      contentBlocks.every((contentBlock) => {
-        let height = contentBlock.clientHeight
-        const style = getComputedStyle(contentBlock)
-        let marginTop = parseInt(style.marginTop)
-        if (lastMarginBottom) {
-          // prevent double counting margin since margin collapses
-          marginTop =
-            lastMarginBottom > marginTop ? 0 : lastMarginBottom - marginTop
-        }
-        let marginBottom = parseInt(style.marginBottom)
-        lastMarginBottom = marginBottom
+        contentBlocks.every((contentBlock) => {
+          //debug
+          const index = contentBlocks.indexOf(contentBlock)
 
-        height += marginTop
-        height += marginBottom
-        accumulationHeight += height
-        return accumulationHeight > defaultContentHeight ? false : true
-      })
-      setContentHeight(accumulationHeight)
-    }
+          let height = contentBlock.clientHeight
+          console.log(index, height)
+          const style = getComputedStyle(contentBlock)
+          let marginTop = parseInt(style.marginTop)
+          if (lastMarginBottom) {
+            // prevent double counting margin since margin collapses
+            marginTop =
+              lastMarginBottom > marginTop ? 0 : lastMarginBottom - marginTop
+          }
+          let marginBottom = parseInt(style.marginBottom)
+          lastMarginBottom = marginBottom
+
+          height += marginTop
+          height += marginBottom
+          accumulationHeight += height
+          return accumulationHeight > defaultContentHeight ? false : true
+        })
+        console.log('accumulationHeight', accumulationHeight)
+        setContentHeight(accumulationHeight)
+      }
+    }, 100)
   }, [])
 
   return (

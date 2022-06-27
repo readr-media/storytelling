@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -56,21 +55,14 @@ const ControlButton = styled.button`
   cursor: pointer;
 `
 
-export default function LiveBlogControl({ changeOrder }) {
-  const [newToOld, setNewToOld] = useState(false)
-
-  const changeOrderHandler = () => {
-    setNewToOld((value) => !value)
-    changeOrder()
-  }
-
+export default function LiveBlogControl({ newToOld, onChangeOrder }) {
   return (
     <Wrapper>
       <div></div>
       <Divider />
       <Control>
         <ControlTitle>{newToOld ? '從新到舊' : '從舊到新'}</ControlTitle>
-        <ControlButton onClick={changeOrderHandler} newToOld={newToOld}>
+        <ControlButton onClick={onChangeOrder} newToOld={newToOld}>
           <img src="/images/icon-order.svg" alt="live blog order" />
         </ControlButton>
       </Control>
