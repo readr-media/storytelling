@@ -6,7 +6,10 @@ import { useRouter } from 'next/router'
 import { JumbotronContainer } from '../../containers/jumbotron'
 import LiveBlogContainr from '../../containers/live-blog'
 import { createGlobalStyle } from 'styled-components'
-import { getLiveblogFetchUrl } from '../../utils/gcs/fetchConfig'
+import {
+  getLiveblogFetchUrl,
+  getLiveblogImageUrl,
+} from '../../utils/gcs/fetchConfig'
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -67,7 +70,14 @@ export default function LiveBlog() {
       </Head>
       <div id="light-box-root" />
       <GlobalStyles />
-      <JumbotronContainer />
+      {liveblog?.heroImage && (
+        <JumbotronContainer
+          image={{
+            name: liveblog.heroImage.name,
+            url: getLiveblogImageUrl(liveblog.heroImage.imageFile.url),
+          }}
+        />
+      )}
       <LiveBlogContainr liveblog={liveblog} />
     </>
   )

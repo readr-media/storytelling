@@ -1,9 +1,9 @@
 import HeroImage from '../components/HeroImage'
 
-export function JumbotronContainer() {
+export function JumbotronContainer({ image }) {
   return (
     <>
-      <HeroImage />
+      <HeroImage image={image} />
     </>
   )
 }

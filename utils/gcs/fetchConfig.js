@@ -8,3 +8,7 @@ const liveblogPath = `/files/liveblogs/`
 export const getLiveblogFetchUrl = (liveblogFileName) => {
   return gcsBucketBaseUrl + liveblogPath + liveblogFileName
 }
+
+export const getLiveblogImageUrl = (imageFilePath) => {
+  return gcsBucketBaseUrl + imageFilePath
+}
