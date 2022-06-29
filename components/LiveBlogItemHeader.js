@@ -26,8 +26,9 @@ const PublisherWrapper = styled.div`
   display: flex;
   align-items: center;
 `
-
+/*
 const PublisherAvatar = styled.span`
+  margin-right: 8px;
   display: inline-block;
   width: 36px;
   height: 36px;
@@ -38,9 +39,8 @@ const PublisherAvatar = styled.span`
   @media (max-width: 768px) {
     display: none;
   }
-`
+`*/
 const PublisherName = styled.span`
-  margin-left: 8px;
   display: inline-block;
   font-size: 12px;
   font-weight: 900;
@@ -71,13 +71,10 @@ moment.locale('zh-tw', {
 export default function LiveBlogItemHeader({ article }) {
   return (
     <div>
-      <div>
-        {article.tags &&
-          article.tags.map((tag) => <Category key={tag}>{tag}</Category>)}
-      </div>
+      <div>{article.tags && <Category>{article.tags.name}</Category>}</div>
       <PublishInfoWrapper>
         <PublisherWrapper>
-          <PublisherAvatar />
+          {/* <PublisherAvatar /> */}
           <PublisherName>{article.author || 'No Name'}</PublisherName>
         </PublisherWrapper>
         <PublishDate>
