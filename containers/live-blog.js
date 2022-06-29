@@ -5,11 +5,10 @@ import Intro from '../components/Intro'
 import LiveBlogControl from '../components/LiveBlogControl'
 import LiveBlogItems from '../components/LiveBlogItems'
 import LiveBlogWrapper from '../components/LiveBlogWrapper'
-import response from '../datas/liveblog.json'
 
 const initialShowingCount = 5
 
-export default function LiveBlogContainr() {
+export default function LiveBlogContainr({ liveblog }) {
   const liveblogItemsRef = useRef([])
   const [boostedLiveblogItems, setBoostedLiveblogItems] = useState([])
   // showing means rendering non boosted liveblogItems
@@ -18,35 +17,32 @@ export default function LiveBlogContainr() {
   const [newToOld, setNewToOld] = useState(true)
   const loadingMoreRef = useRef(false)
 
-  // fetch liveblog json
   useEffect(() => {
-    // fake fetched json
-    if (!liveblogItemsRef.current.length) {
-      const liveblogItems = response.data.liveblog.liveblog_items
-      liveblogItemsRef.current = liveblogItems
+    if (liveblog?.liveblog_items) {
+      liveblogItemsRef.current = liveblog.liveblog_items
+
+      const boostedLiveblogItems = liveblogItemsRef.current
+        .filter((liveblogItem) => liveblogItem.boost)
+        .sort((a, b) => {
+          const tsA = moment(a.publishTime).valueOf()
+          const tsB = moment(b.publishTime).valueOf()
+          return newToOld ? tsB - tsA : tsA - tsB
+        })
+
+      const showingLiveblogItems = liveblogItemsRef.current
+        .filter((liveblogItem) => !liveblogItem.boost)
+        .sort((a, b) => {
+          const tsA = moment(a.publishTime).valueOf()
+          const tsB = moment(b.publishTime).valueOf()
+          return newToOld ? tsB - tsA : tsA - tsB
+        })
+        .slice(0, showingCount)
+
+      setBoostedLiveblogItems(boostedLiveblogItems)
+      setShowingLiveblogItems(showingLiveblogItems)
+      loadingMoreRef.current = false
     }
-
-    const boostedLiveblogItems = liveblogItemsRef.current
-      .filter((liveblogItem) => liveblogItem.boost)
-      .sort((a, b) => {
-        const tsA = moment(a.publishTime).valueOf()
-        const tsB = moment(b.publishTime).valueOf()
-        return newToOld ? tsB - tsA : tsA - tsB
-      })
-
-    const showingLiveblogItems = liveblogItemsRef.current
-      .filter((liveblogItem) => !liveblogItem.boost)
-      .sort((a, b) => {
-        const tsA = moment(a.publishTime).valueOf()
-        const tsB = moment(b.publishTime).valueOf()
-        return newToOld ? tsB - tsA : tsA - tsB
-      })
-      .slice(0, showingCount)
-
-    setBoostedLiveblogItems(boostedLiveblogItems)
-    setShowingLiveblogItems(showingLiveblogItems)
-    loadingMoreRef.current = false
-  }, [newToOld, showingCount])
+  }, [liveblog, newToOld, showingCount])
 
   // handle loadmore
   useEffect(() => {

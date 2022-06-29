@@ -72,9 +72,8 @@ export default function LiveBlogItemHeader({ article }) {
   return (
     <div>
       <div>
-        {article.tags.map((tag) => (
-          <Category key={tag}>{tag}</Category>
-        ))}
+        {article.tags &&
+          article.tags.map((tag) => <Category key={tag}>{tag}</Category>)}
       </div>
       <PublishInfoWrapper>
         <PublisherWrapper>
