@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import DraftRenderer from './DraftRenderer'
 
+import { getLiveblogImageUrl } from '../utils/gcs/fetchConfig'
+
 const Wrapper = styled.div`
   margin-top: 16px;
 
@@ -58,6 +60,15 @@ export default function LiveBlogItemContent({ article, expanded }) {
   const targetRef = useRef()
   const [contentHeight, setContentHeight] = useState(defaultContentHeight)
 
+  let heroImage = {}
+  if (article?.heroImage) {
+    heroImage = {
+      name: article.heroImage.name,
+      url: getLiveblogImageUrl(article.heroImage.imageFile.url),
+    }
+  }
+  const caption = null
+
   useEffect(() => {
     // delay to calculate in order to get the real DOM height
     setTimeout(() => {
@@ -99,10 +110,8 @@ export default function LiveBlogItemContent({ article, expanded }) {
     <Wrapper>
       <Title>{article.title}</Title>
       <HeroImageWrapper>
-        <img src="/images/liveblogitem-hero-image.png" alt="hero image" />
-        <HeroImageCaption>
-          圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說
-        </HeroImageCaption>
+        <img src={heroImage.url} alt={heroImage.name} />
+        {caption && <HeroImageCaption>{caption}</HeroImageCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
