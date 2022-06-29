@@ -73,7 +73,13 @@ export default function LiveBlogContainr({ liveblog }) {
 
   return (
     <LiveBlogWrapper>
-      <Intro />
+      <Intro
+        intro={{
+          title: liveblog?.name,
+          description: liveblog?.desc,
+          time: liveblog?.updatedAt ? liveblog?.updatedAt : liveblog?.createdAt,
+        }}
+      />
       <LiveBlogControl
         newToOld={newToOld}
         onChangeOrder={() => {
