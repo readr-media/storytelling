@@ -1,7 +1,6 @@
-const gcsBucketBaseUrl =
-  process.env.NODE_ENV === 'production'
-    ? 'https://storage.googleapis.com/statics-editools-prod'
-    : `https://storage.googleapis.com/statics-editools-dev`
+const gcsBucketBaseUrl = process.env.GCS_BUCKET_URL
+  ? process.env.GCS_BUCKET_URL
+  : `https://storage.googleapis.com/statics-editools-dev`
 
 const liveblogPath = `/files/liveblogs/`
 
