@@ -74,11 +74,7 @@ export default function LiveBlogItemContent({ article, expanded }) {
         let lastMarginBottom = 0
 
         contentBlocks.every((contentBlock) => {
-          //debug
-          const index = contentBlocks.indexOf(contentBlock)
-
           let height = contentBlock.clientHeight
-          console.log(index, height)
           const style = getComputedStyle(contentBlock)
           let marginTop = parseInt(style.marginTop)
           if (lastMarginBottom) {
@@ -94,7 +90,6 @@ export default function LiveBlogItemContent({ article, expanded }) {
           accumulationHeight += height
           return accumulationHeight > defaultContentHeight ? false : true
         })
-        console.log('accumulationHeight', accumulationHeight)
         setContentHeight(accumulationHeight)
       }
     }, 100)
