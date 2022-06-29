@@ -89,7 +89,7 @@ export default function LiveBlogContainr({ liveblog }) {
       />
       <LiveBlogItems
         articles={showingLiveblogItems}
-        pinedArticle={boostedLiveblogItems[0]}
+        pinedArticles={boostedLiveblogItems}
       />
     </LiveBlogWrapper>
   )
