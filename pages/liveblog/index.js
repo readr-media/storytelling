@@ -71,13 +71,19 @@ export async function getServerSideProps({ query }) {
   if (liveblogFileName) {
     liveblogFileName = liveblogFileName + '.json'
     const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
+    console.log(
+      JSON.stringify({
+        severity: 'DEBUG',
+        message: `SSR get liveblog json in ${fetchUrl}`,
+      })
+    )
     try {
       const response = await axios.get(fetchUrl)
       if (response?.data) {
         initialLiveblog = response.data
       }
     } catch (error) {
-      console.error('Fetching liveblog with error', error)
+      console.log(JSON.stringify({ severity: 'ERROR', message: error.stack }))
     }
   }
 
