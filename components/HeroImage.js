@@ -9,6 +9,7 @@ export default function HeroImage({ image }) {
         height="484"
         layout="responsive"
         alt={image.name}
+        priority
       />
     </div>
   )
