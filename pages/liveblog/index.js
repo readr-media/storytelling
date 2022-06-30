@@ -38,6 +38,9 @@ export default function LiveBlog({ initialLiveblog }) {
       const liveblogFileName = router.query.liveblog + '.json'
       const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
 
+      if (initialLiveblog) {
+        fetchLiveblog(fetchUrl)
+      }
       intervalIdRef.current = setInterval(() => {
         fetchLiveblog(fetchUrl)
       }, 60000)
@@ -67,7 +70,7 @@ export default function LiveBlog({ initialLiveblog }) {
 
 export async function getServerSideProps({ query }) {
   let liveblogFileName = query.liveblog
-  let initialLiveblog
+  let initialLiveblog = null
   if (liveblogFileName) {
     liveblogFileName = liveblogFileName + '.json'
     const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
@@ -78,12 +81,21 @@ export async function getServerSideProps({ query }) {
       })
     )
     try {
-      const response = await axios.get(fetchUrl)
+      const response = await axios.get(fetchUrl, { timeout: 2000 })
       if (response?.data) {
         initialLiveblog = response.data
       }
     } catch (error) {
-      console.log(JSON.stringify({ severity: 'ERROR', message: error.stack }))
+      console.log(
+        JSON.stringify({
+          severity: 'ERROR',
+          message: new Error(`axios fetch ${fetchUrl} failed, ${error.message}`)
+            .stack,
+        })
+      )
+      console.log(
+        JSON.stringify({ severity: 'DEBUG', message: JSON.stringify(error) })
+      )
     }
   }
 
