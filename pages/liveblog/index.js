@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import Head from 'next/head'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -55,19 +54,6 @@ export default function LiveBlog() {
 
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <div id="light-box-root" />
       <GlobalStyles />
       {liveblog?.heroImage && (
