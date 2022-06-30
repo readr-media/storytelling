@@ -1,14 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 
 import { JumbotronContainer } from '../../containers/jumbotron'
 import LiveBlogContainr from '../../containers/live-blog'
 import { createGlobalStyle } from 'styled-components'
-import {
-  getLiveblogFetchUrl,
-  getLiveblogImageUrl,
-} from '../../utils/gcs/fetchConfig'
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -16,8 +11,11 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 
-export default function LiveBlog({ initialLiveblog }) {
-  const router = useRouter()
+export default function LiveBlog({
+  initialLiveblog,
+  fetchLiveblogUrl,
+  fetchImageBaseUrl,
+}) {
   const [liveblog, setLiveblog] = useState(initialLiveblog)
   const intervalIdRef = useRef()
 
@@ -34,22 +32,21 @@ export default function LiveBlog({ initialLiveblog }) {
       }
     }
 
-    if (router.query.liveblog) {
-      const liveblogFileName = router.query.liveblog + '.json'
-      const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
-
-      if (initialLiveblog) {
-        fetchLiveblog(fetchUrl)
+    if (fetchLiveblogUrl) {
+      if (!initialLiveblog) {
+        fetchLiveblog(fetchLiveblogUrl)
       }
       intervalIdRef.current = setInterval(() => {
-        fetchLiveblog(fetchUrl)
+        fetchLiveblog(fetchLiveblogUrl)
       }, 60000)
     }
 
     return () => {
       clearInterval(intervalIdRef.current)
     }
-  }, [router.query.liveblog])
+  }, [fetchLiveblogUrl, initialLiveblog])
+
+  if (!fetchLiveblogUrl) return <p>Please asign liveblog slug name</p>
 
   return (
     <>
@@ -59,11 +56,14 @@ export default function LiveBlog({ initialLiveblog }) {
         <JumbotronContainer
           image={{
             name: liveblog.heroImage.name,
-            url: getLiveblogImageUrl(liveblog.heroImage.imageFile.url),
+            url: fetchImageBaseUrl + liveblog.heroImage.imageFile.url,
           }}
         />
       )}
-      <LiveBlogContainr liveblog={liveblog} />
+      <LiveBlogContainr
+        liveblog={liveblog}
+        fetchImageBaseUrl={fetchImageBaseUrl}
+      />
     </>
   )
 }
@@ -71,33 +71,50 @@ export default function LiveBlog({ initialLiveblog }) {
 export async function getServerSideProps({ query }) {
   let liveblogFileName = query.liveblog
   let initialLiveblog = null
+  let fetchLiveblogUrl = ''
+  let fetchImageBaseUrl = ''
+  const gcsBucketBaseUrl = process.env.GCS_BUCKET_URL
+    ? process.env.GCS_BUCKET_URL
+    : 'https://editools-gcs-dev.readr.tw'
+
+  console.log(liveblogFileName, gcsBucketBaseUrl)
   if (liveblogFileName) {
     liveblogFileName = liveblogFileName + '.json'
-    const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
+    fetchImageBaseUrl = gcsBucketBaseUrl
+    fetchLiveblogUrl = gcsBucketBaseUrl + '/files/liveblogs/' + liveblogFileName
     console.log(
       JSON.stringify({
         severity: 'DEBUG',
-        message: `SSR get liveblog json in ${fetchUrl}`,
+        message: `SSR get liveblog json in ${fetchLiveblogUrl}`,
       })
     )
     try {
-      const response = await axios.get(fetchUrl, { timeout: 2000 })
+      const response = await axios.get(fetchLiveblogUrl, { timeout: 2000 })
       if (response?.data) {
+        console.log(
+          JSON.stringify({
+            severity: 'DEBUG',
+            message: `SSR successfully get liveblog json, ${JSON.stringify(
+              response.data
+            )}`,
+          })
+        )
         initialLiveblog = response.data
       }
     } catch (error) {
       console.log(
-        JSON.stringify({
-          severity: 'ERROR',
-          message: new Error(`axios fetch ${fetchUrl} failed, ${error.message}`)
-            .stack,
-        })
+        JSON.stringify({ severity: 'DEBUG', message: JSON.stringify(error) })
       )
       console.log(
-        JSON.stringify({ severity: 'DEBUG', message: JSON.stringify(error) })
+        JSON.stringify({
+          severity: 'ERROR',
+          message: new Error(
+            `axios fetch ${fetchLiveblogUrl} failed, ${error.message}`
+          ).stack,
+        })
       )
     }
   }
 
-  return { props: { initialLiveblog } }
+  return { props: { initialLiveblog, fetchLiveblogUrl, fetchImageBaseUrl } }
 }
