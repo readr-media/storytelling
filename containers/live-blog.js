@@ -60,7 +60,6 @@ export default function LiveBlogContainr({ liveblog }) {
 
       if (reachEnd && somethingLeftToShow && !loadingMoreRef.current) {
         loadingMoreRef.current = true
-        console.log('increase showingCount')
         setShowingCount((showingCount) => showingCount + 5)
       }
     }

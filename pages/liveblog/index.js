@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import Head from 'next/head'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -17,32 +16,28 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 
-export default function LiveBlog() {
-  const [liveblog, setLiveblog] = useState()
-  const intervalIdRef = useRef()
+export default function LiveBlog({ initialLiveblog }) {
   const router = useRouter()
-  const targetLiveblog = router.query.liveblog
+  const [liveblog, setLiveblog] = useState(initialLiveblog)
+  const intervalIdRef = useRef()
 
   useEffect(() => {
     const fetchLiveblog = async (url) => {
       try {
         const response = await axios.get(url)
-        console.log(response)
+
         if (response?.data) {
           setLiveblog(response.data)
         }
       } catch (error) {
-        console.log(JSON.stringify({ severity: 'ERROR', message: error.stack }))
+        console.error('Fetching liveblog with error', error)
       }
     }
 
-    console.log('targetLiveblog', targetLiveblog)
-
-    if (targetLiveblog) {
-      const liveblogFileName = targetLiveblog + '.json'
+    if (router.query.liveblog) {
+      const liveblogFileName = router.query.liveblog + '.json'
       const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
 
-      fetchLiveblog(fetchUrl)
       intervalIdRef.current = setInterval(() => {
         fetchLiveblog(fetchUrl)
       }, 60000)
@@ -51,23 +46,10 @@ export default function LiveBlog() {
     return () => {
       clearInterval(intervalIdRef.current)
     }
-  }, [targetLiveblog])
+  }, [router.query.liveblog])
 
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <div id="light-box-root" />
       <GlobalStyles />
       {liveblog?.heroImage && (
@@ -81,4 +63,23 @@ export default function LiveBlog() {
       <LiveBlogContainr liveblog={liveblog} />
     </>
   )
+}
+
+export async function getServerSideProps({ query }) {
+  let liveblogFileName = query.liveblog
+  let initialLiveblog
+  if (liveblogFileName) {
+    liveblogFileName = liveblogFileName + '.json'
+    const fetchUrl = getLiveblogFetchUrl(liveblogFileName)
+    try {
+      const response = await axios.get(fetchUrl)
+      if (response?.data) {
+        initialLiveblog = response.data
+      }
+    } catch (error) {
+      console.error('Fetching liveblog with error', error)
+    }
+  }
+
+  return { props: { initialLiveblog } }
 }
