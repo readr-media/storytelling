@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['storage.googleapis.com'],
+    domains: ['editools-gcs-dev.readr.tw', 'editools-gcs.readr.tw'],
   },
 }
 
