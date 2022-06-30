@@ -8,7 +8,7 @@ import LiveBlogWrapper from '../components/LiveBlogWrapper'
 
 const initialShowingCount = 5
 
-export default function LiveBlogContainr({ liveblog }) {
+export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const liveblogItemsRef = useRef([])
   const [boostedLiveblogItems, setBoostedLiveblogItems] = useState([])
   // showing means rendering non boosted liveblogItems
@@ -89,6 +89,7 @@ export default function LiveBlogContainr({ liveblog }) {
       <LiveBlogItems
         articles={showingLiveblogItems}
         pinedArticles={boostedLiveblogItems}
+        fetchImageBaseUrl={fetchImageBaseUrl}
       />
     </LiveBlogWrapper>
   )

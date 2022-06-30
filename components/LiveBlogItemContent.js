@@ -2,8 +2,6 @@ import { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import DraftRenderer from './DraftRenderer'
 
-import { getLiveblogImageUrl } from '../utils/gcs/fetchConfig'
-
 const Wrapper = styled.div`
   margin-top: 16px;
 
@@ -56,7 +54,11 @@ const DraftEditorWrapper = styled.div`
 // 5 lines of normal text
 const defaultContentHeight = 87.5
 
-export default function LiveBlogItemContent({ article, expanded }) {
+export default function LiveBlogItemContent({
+  article,
+  expanded,
+  fetchImageBaseUrl,
+}) {
   const targetRef = useRef()
   const [contentHeight, setContentHeight] = useState(defaultContentHeight)
 
@@ -64,7 +66,7 @@ export default function LiveBlogItemContent({ article, expanded }) {
   if (article?.heroImage) {
     heroImage = {
       name: article.heroImage.name,
-      url: getLiveblogImageUrl(article.heroImage.imageFile.url),
+      url: fetchImageBaseUrl + article.heroImage.imageFile.url,
     }
   }
   const caption = null
