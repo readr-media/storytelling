@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { css, createGlobalStyle } from 'styled-components'
 import LiveBlogBottomActions from './LiveBlogBottomActions'
 import LiveBlogItemContent from './LiveBlogItemContent'
@@ -51,6 +51,7 @@ const LiveBlog = styled.div`
 export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
   const [expanded, setExpanded] = useState(false)
   const [showAsLightbox, setShowAsLightbox] = useState(false)
+  const [hideExpandButton, setHideExpandButton] = useState(false)
 
   useEffect(() => {
     if (showAsLightbox) {
@@ -90,10 +91,11 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
             article={article}
             expanded={expanded}
             fetchImageBaseUrl={fetchImageBaseUrl}
+            contentTooShort={setHideExpandButton}
           />
         </LiveBlog>
       </LiveBlogWrapper>
-      {!showAsLightbox && (
+      {!hideExpandButton && !showAsLightbox && (
         <LiveBlogBottomActions
           onClick={expandClickedHandler}
           expanded={expanded}
