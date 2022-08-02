@@ -12,10 +12,14 @@ const Wrapper = styled.div`
 
 const ExpandButton = styled.button`
   color: #999;
-  font-size: 12px;
   font-weight: 700;
-  line-height: 17.38px;
   text-decoration: underline;
+
+  font-size: 16px;
+  line-height: 1.5;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 
   &:hover,
   &:active {
