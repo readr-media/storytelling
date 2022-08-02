@@ -75,7 +75,7 @@ export default function LiveBlogItemHeader({ article }) {
       <PublishInfoWrapper>
         <PublisherWrapper>
           {/* <PublisherAvatar /> */}
-          <PublisherName>{article.author || 'No Name'}</PublisherName>
+          <PublisherName>{article.author || ''}</PublisherName>
         </PublisherWrapper>
         <PublishDate>
           {moment(article.publishTime)
