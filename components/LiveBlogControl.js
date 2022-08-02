@@ -36,10 +36,12 @@ const Control = styled.div`
 
 const ControlTitle = styled.div`
   display: inline-block;
-  font-size: 12px;
-  transform: scale(calc(10 / 12));
-  line-height: 1;
   margin-right: 6px;
+  font-size: 16px;
+  line-height: 1.5;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 
 const ControlButton = styled.button`

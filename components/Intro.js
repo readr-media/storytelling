@@ -22,18 +22,23 @@ const Title = styled.div`
 
 const Description = styled.p`
   margin-top: 20px;
-  font-size: 12px;
-  line-height: 17px;
   text-align: justify;
+  font-size: 16px;
+  line-height: 1.5;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 
 const UpdateTime = styled.p`
   margin-top: 28px;
   text-align: center;
   font-weight: 900;
-  font-size: 12px;
-  transform: scale(calc(10 / 12));
-  line-height: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 
 export default function Intro({ intro }) {
