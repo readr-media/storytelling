@@ -32,23 +32,17 @@ const HeroImageWrapper = styled.div`
   }
 `
 
-const HeroImageCaption = styled.div`
-  position: relative;
-  margin-top: 4px;
-  width: 133%;
-  left: -16.65%;
-  font-size: 12px;
-  font-weight: 400;
-  transform: scale(calc(9 / 12));
-  line-height: 13px;
-  color: #999;
-`
-
 const DraftEditorWrapper = styled.div`
   margin-top: 20px;
   overflow: hidden;
   height: ${({ expanded, height }) => (expanded ? 'unset' : `${height}px`)};
   min-height: ${({ expanded, height }) => (expanded ? `${height}px` : 'unset')};
+  font-size: 16px;
+  line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 
 // 5 lines of normal text
@@ -69,7 +63,6 @@ export default function LiveBlogItemContent({
       url: fetchImageBaseUrl + article.heroImage.imageFile.url,
     }
   }
-  const caption = null
 
   useEffect(() => {
     // delay to calculate in order to get the real DOM height
@@ -113,7 +106,6 @@ export default function LiveBlogItemContent({
       <Title>{article.title}</Title>
       <HeroImageWrapper>
         <img src={heroImage.url} alt={heroImage.name} />
-        {caption && <HeroImageCaption>{caption}</HeroImageCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
