@@ -52,6 +52,7 @@ export default function LiveBlogItemContent({
   article,
   expanded,
   fetchImageBaseUrl,
+  contentTooShort,
 }) {
   const targetRef = useRef()
   const [contentHeight, setContentHeight] = useState(defaultContentHeight)
@@ -100,6 +101,18 @@ export default function LiveBlogItemContent({
       }
     }, 100)
   }, [])
+
+  useEffect(() => {
+    if (!expanded && contentHeight !== defaultContentHeight) {
+      const draftContentWrapper = targetRef.current.querySelector(
+        '.public-DraftEditor-content > div'
+      )
+
+      if (draftContentWrapper.offsetHeight === contentHeight) {
+        contentTooShort(true)
+      }
+    }
+  }, [expanded, contentHeight, contentTooShort])
 
   return (
     <Wrapper>
