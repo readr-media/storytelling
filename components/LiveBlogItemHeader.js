@@ -59,7 +59,8 @@ const PublishDate = styled.div`
 
   @media (max-width: 768px) {
     position: relative;
-    left: -6%;
+    left: calc(-100% / 12);
+    width: 100%;
     margin-top: 4px;
   }
 `
@@ -75,7 +76,9 @@ export default function LiveBlogItemHeader({ article }) {
       <PublishInfoWrapper>
         <PublisherWrapper>
           {/* <PublisherAvatar /> */}
-          <PublisherName>{article.author || ''}</PublisherName>
+          <PublisherName>
+            {article.author ? `記者：${article.author}` : ''}
+          </PublisherName>
         </PublisherWrapper>
         <PublishDate>
           {moment(article.publishTime)
