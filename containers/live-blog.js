@@ -1,84 +1,96 @@
-import { useState, useEffect } from 'react'
-import useReferredState from '../hooks/useReferredState'
+import { useState, useEffect, useRef } from 'react'
+import moment from 'moment'
+
 import Intro from '../components/Intro'
 import LiveBlogControl from '../components/LiveBlogControl'
 import LiveBlogItems from '../components/LiveBlogItems'
 import LiveBlogWrapper from '../components/LiveBlogWrapper'
-import response from '../datas/liveblog.json'
 
-export default function LiveBlogContainr() {
-  const [articles, setArticles] = useState([])
-  const [pinedArticle, setPinedArticle] = useState(null)
-  const [showingArticles, showingArticlesRef, setShowingArticles] =
-    useReferredState([])
-  const [, hidingArticlesRef, setHidingArticles] = useReferredState([])
-  const [, loadingRef, setLoading] = useReferredState(false)
+const initialShowingCount = 5
 
-  const getPinedArticle = (articles) => {
-    const randomIndex = Math.random() * articles.length
-    const articleToBePined = articles.splice(randomIndex, 1)[0]
-    return articleToBePined
-  }
+export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
+  const liveblogItemsRef = useRef([])
+  const [boostedLiveblogItems, setBoostedLiveblogItems] = useState([])
+  // showing means rendering non boosted liveblogItems
+  const [showingCount, setShowingCount] = useState(initialShowingCount)
+  const [showingLiveblogItems, setShowingLiveblogItems] = useState([])
+  const [newToOld, setNewToOld] = useState(true)
+  const loadingMoreRef = useRef(false)
 
-  const loadMore = () => {
-    const currentScrollingPoition =
-      window.innerHeight + document.documentElement.scrollTop
+  useEffect(() => {
+    if (liveblog?.liveblog_items) {
+      liveblogItemsRef.current = liveblog.liveblog_items
 
-    if (
-      currentScrollingPoition === document.scrollingElement.scrollHeight &&
-      !loadingRef.current &&
-      hidingArticlesRef.current.length
-    ) {
-      const articlesToHide = [...hidingArticlesRef.current]
-      const articlesToShow = [...showingArticlesRef.current].concat(
-        articlesToHide.splice(0, 5)
-      )
-      console.log('articlesToShow', articlesToShow)
-      console.log('articlesToHide', articlesToHide)
+      const boostedLiveblogItems = liveblogItemsRef.current
+        .filter((liveblogItem) => liveblogItem.boost)
+        .sort((a, b) => {
+          const tsA = moment(a.publishTime).valueOf()
+          const tsB = moment(b.publishTime).valueOf()
+          return newToOld ? tsB - tsA : tsA - tsB
+        })
 
-      setLoading(true)
-      setTimeout(() => {
-        setLoading(false)
-        setShowingArticles(articlesToShow)
-        setHidingArticles(articlesToHide)
-      }, 1000)
+      const showingLiveblogItems = liveblogItemsRef.current
+        .filter((liveblogItem) => !liveblogItem.boost)
+        .sort((a, b) => {
+          const tsA = moment(a.publishTime).valueOf()
+          const tsB = moment(b.publishTime).valueOf()
+          return newToOld ? tsB - tsA : tsA - tsB
+        })
+        .slice(0, showingCount)
+
+      setBoostedLiveblogItems(boostedLiveblogItems)
+      setShowingLiveblogItems(showingLiveblogItems)
+      loadingMoreRef.current = false
     }
-  }
+  }, [liveblog, newToOld, showingCount])
 
+  // handle loadmore
   useEffect(() => {
-    //fake fetch json data
-    const articleData = response.data.liveblog.liveblog_items
-    const articleToBePined = getPinedArticle(articleData)
-    setArticles(articleData)
-    setPinedArticle(articleToBePined)
-  }, [])
+    const loadMore = () => {
+      const currentScrollingPoition =
+        window.innerHeight + document.documentElement.scrollTop
+      // loose comparison to prevent exact match not easy to trigger under some situation
+      const reachEnd =
+        currentScrollingPoition > document.scrollingElement.scrollHeight - 30
+      const somethingLeftToShow =
+        liveblogItemsRef.current.length -
+          boostedLiveblogItems.length -
+          showingLiveblogItems.length >
+        0
 
-  useEffect(() => {
-    if (articles.length) {
-      const articlesToHide = [...articles]
-      const articlesToShow = articlesToHide.splice(0, 4)
-      setShowingArticles(articlesToShow)
-      setHidingArticles(articlesToHide)
+      if (reachEnd && somethingLeftToShow && !loadingMoreRef.current) {
+        loadingMoreRef.current = true
+        setShowingCount((showingCount) => showingCount + 5)
+      }
     }
-  }, [articles, setHidingArticles, setShowingArticles])
 
-  useEffect(() => {
     window.addEventListener('scroll', loadMore)
     return () => {
       window.removeEventListener('scroll', loadMore)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const orderChangedHandler = () => {
-    setArticles((articles) => [...articles].reverse())
-  }
+  }, [boostedLiveblogItems, showingLiveblogItems])
 
   return (
     <LiveBlogWrapper>
-      <Intro />
-      <LiveBlogControl changeOrder={orderChangedHandler} />
-      <LiveBlogItems articles={showingArticles} pinedArticle={pinedArticle} />
+      <Intro
+        intro={{
+          title: liveblog?.name,
+          description: liveblog?.desc,
+          time: liveblog?.updatedAt ? liveblog?.updatedAt : liveblog?.createdAt,
+        }}
+      />
+      <LiveBlogControl
+        newToOld={newToOld}
+        onChangeOrder={() => {
+          setNewToOld((value) => !value)
+          setShowingCount(initialShowingCount)
+        }}
+      />
+      <LiveBlogItems
+        articles={showingLiveblogItems}
+        pinedArticles={boostedLiveblogItems}
+        fetchImageBaseUrl={fetchImageBaseUrl}
+      />
     </LiveBlogWrapper>
   )
 }

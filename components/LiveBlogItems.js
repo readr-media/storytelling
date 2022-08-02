@@ -13,14 +13,27 @@ const Wrapper = styled.div`
   }
 `
 
-export default function LiveBlogItems(props) {
+export default function LiveBlogItems({
+  pinedArticles,
+  articles,
+  fetchImageBaseUrl,
+}) {
   return (
     <Wrapper>
-      {props.pinedArticle && (
-        <LiveBlogItem pined article={props.pinedArticle} />
-      )}
-      {props.articles.map((article) => (
-        <LiveBlogItem key={article.id} article={article} />
+      {pinedArticles.map((article) => (
+        <LiveBlogItem
+          key={article.id}
+          pined
+          article={article}
+          fetchImageBaseUrl={fetchImageBaseUrl}
+        />
+      ))}
+      {articles.map((article) => (
+        <LiveBlogItem
+          key={article.id}
+          article={article}
+          fetchImageBaseUrl={fetchImageBaseUrl}
+        />
       ))}
     </Wrapper>
   )

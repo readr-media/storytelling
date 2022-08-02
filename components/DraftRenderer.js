@@ -31,12 +31,34 @@ export default function DraftRenderer({ rawContentBlock }) {
   const editorState = EditorState.createWithContent(contentState, decorators)
 
   return (
-    <Editor
-      editorState={editorState}
-      readOnly
-      customStyleMap={styleMap}
-      blockRendererFn={blockRendererFn}
-      blockStyleFn={getBlockStyle}
-    />
+    <>
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+        type="text/css"
+      />
+      <link
+        href="https://storage.googleapis.com/static-readr-tw-dev/cdn/draft-js/rich-editor.css"
+        rel="stylesheet"
+        type="text/css"
+      />
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.11.7/Draft.css"
+        rel="stylesheet"
+        type="text/css"
+      />
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+        rel="stylesheet"
+        type="text/css"
+      />
+      <Editor
+        editorState={editorState}
+        readOnly
+        customStyleMap={styleMap}
+        blockRendererFn={blockRendererFn}
+        blockStyleFn={getBlockStyle}
+      />
+    </>
   )
 }

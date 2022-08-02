@@ -54,55 +54,66 @@ const DraftEditorWrapper = styled.div`
 // 5 lines of normal text
 const defaultContentHeight = 87.5
 
-export default function LiveBlogItemContent({ article, expanded }) {
+export default function LiveBlogItemContent({
+  article,
+  expanded,
+  fetchImageBaseUrl,
+}) {
   const targetRef = useRef()
   const [contentHeight, setContentHeight] = useState(defaultContentHeight)
 
-  useEffect(() => {
-    if (targetRef.current) {
-      /*
-      to limit the displaying contents' height not greater than defaultContentHeight
-      loop over draftjs contentBlock to check if accumulation of heights exceeds defaultContentHeight 
-      use accumulation of heights to prevent words cut in the middle
-      if 
-      */
-      console.log(targetRef.current)
-      const contentBlocks = [
-        ...targetRef.current.querySelectorAll('[data-block="true"]'),
-      ]
-
-      let accumulationHeight = 0
-      let lastMarginBottom = 0
-
-      contentBlocks.every((contentBlock) => {
-        let height = contentBlock.clientHeight
-        const style = getComputedStyle(contentBlock)
-        let marginTop = parseInt(style.marginTop)
-        if (lastMarginBottom) {
-          // prevent double counting margin since margin collapses
-          marginTop =
-            lastMarginBottom > marginTop ? 0 : lastMarginBottom - marginTop
-        }
-        let marginBottom = parseInt(style.marginBottom)
-        lastMarginBottom = marginBottom
-
-        height += marginTop
-        height += marginBottom
-        accumulationHeight += height
-        return accumulationHeight > defaultContentHeight ? false : true
-      })
-      setContentHeight(accumulationHeight)
+  let heroImage = {}
+  if (article?.heroImage) {
+    heroImage = {
+      name: article.heroImage.name,
+      url: fetchImageBaseUrl + article.heroImage.imageFile.url,
     }
+  }
+  const caption = null
+
+  useEffect(() => {
+    // delay to calculate in order to get the real DOM height
+    setTimeout(() => {
+      if (targetRef.current) {
+        /*
+        accumulate the height of contentBlocks to render the wrapper with height closest to the spec (5 lines)
+        and prevent words got cut vertically
+        */
+        const contentBlocks = [
+          ...targetRef.current.querySelectorAll('[data-block="true"]'),
+        ]
+
+        let accumulationHeight = 0
+        let lastMarginBottom = 0
+
+        contentBlocks.every((contentBlock) => {
+          let height = contentBlock.clientHeight
+          const style = getComputedStyle(contentBlock)
+          let marginTop = parseInt(style.marginTop)
+          if (lastMarginBottom) {
+            // prevent double counting margin since margin collapses
+            marginTop =
+              lastMarginBottom > marginTop ? 0 : lastMarginBottom - marginTop
+          }
+          let marginBottom = parseInt(style.marginBottom)
+          lastMarginBottom = marginBottom
+
+          height += marginTop
+          height += marginBottom
+          accumulationHeight += height
+          return accumulationHeight > defaultContentHeight ? false : true
+        })
+        setContentHeight(accumulationHeight)
+      }
+    }, 100)
   }, [])
 
   return (
     <Wrapper>
       <Title>{article.title}</Title>
       <HeroImageWrapper>
-        <img src="/images/liveblogitem-hero-image.png" alt="hero image" />
-        <HeroImageCaption>
-          圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說圖說
-        </HeroImageCaption>
+        <img src={heroImage.url} alt={heroImage.name} />
+        {caption && <HeroImageCaption>{caption}</HeroImageCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
