@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import styled, { css, createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import LiveBlogBottomActions from './LiveBlogBottomActions'
 import LiveBlogItemContent from './LiveBlogItemContent'
 import LiveBlogItemHeader from './LiveBlogItemHeader'
 import LiveBlogTopActions from './LiveBlogTopActions'
-import Backdrop from './Backdrop'
-import ReactDom from 'react-dom'
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -13,17 +11,24 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 
-const lightbox = css`
-  width: 640px;
-  margin: 212px auto 40px auto;
-
-  @media (max-width: 768px) {
-    width: unset;
-    margin: 157px 16px 40px 16px;
-  }
+const Wrapper = styled.div`
+  ${({ showAsLightbox }) => {
+    if (showAsLightbox) {
+      return `
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: scroll;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.75);
+      `
+    }
+  }}
 `
 
-const Wrapper = styled.div`
+const LiveBlogItemWrapper = styled.div`
   position: relative;
   background-color: ${(props) => (props.pined ? '#fdf6ec' : '#fff')};
   margin-top: 40px;
@@ -31,7 +36,19 @@ const Wrapper = styled.div`
   @media (max-width: 768px) {
     margin-top: 28px;
   }
-  ${({ showAsLightbox }) => (showAsLightbox ? lightbox : '')}
+  ${({ showAsLightbox }) => {
+    if (showAsLightbox) {
+      return `
+      width: 640px;
+      margin: 212px auto 40px auto !important;
+    
+      @media (max-width: 768px) {
+        width: unset;
+        margin: 157px 16px 40px 16px !important;
+      }    
+      `
+    }
+  }}
 `
 
 const LiveBlogWrapper = styled.div`
@@ -71,8 +88,8 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
     setShowAsLightbox(false)
   }
 
-  let LiveBlogItem = (
-    <Wrapper
+  const LiveBlogItem = (
+    <LiveBlogItemWrapper
       pined={pined}
       showAsLightbox={showAsLightbox}
       onClick={(e) => {
@@ -101,18 +118,16 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
           expanded={expanded}
         />
       )}
-    </Wrapper>
+    </LiveBlogItemWrapper>
   )
 
-  if (showAsLightbox) {
-    LiveBlogItem = ReactDom.createPortal(
-      <Backdrop onClick={closeLighboxClickedHandler}>
-        <GlobalStyles />
-        {LiveBlogItem}
-      </Backdrop>,
-      document.getElementById('light-box-root')
-    )
-  }
-
-  return <div>{LiveBlogItem}</div>
+  return (
+    <Wrapper
+      showAsLightbox={showAsLightbox}
+      onClick={closeLighboxClickedHandler}
+    >
+      {showAsLightbox && <GlobalStyles />}
+      {LiveBlogItem}
+    </Wrapper>
+  )
 }
