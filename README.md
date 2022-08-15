@@ -15,6 +15,48 @@ yarn dev
 
 Since this project will contain multiple independent page, check [http://localhost:3000/liveblog](http://localhost:3000) for the Liveblog page.
 
+Steps to setup the liveblog:
+**Liveblog source - Editools CMS**
+- Liveblog and liveblogItem will be created inside editools cms.
+- After the CRUD of liveblog and liveblogItem, the k6 hooks (afterOperation) will create/update the corresponding json file to gcs buck through gcsfuse.
+- ENV.variable: `GCS_BUCKET` / `LIVEBLOG_FILES_STORAGE_PATH`
+
+**Liveblog json storage - GCS Bucket**
+-  Check if {liveblog}.json is created/updated after k6 liveblog/liveblogItem edited
+-  Setup file cache control (file level)
+    command to set cache control
+    ```
+    gsutil -m setmeta -r -h "Cache-control:public, max-age=30" gs://{bucket_name}/files/liveblogs
+    ```
+    command to check cache control (meta)
+    ```
+    gsutil stat gs://statics-editools-dev/files/liveblogs
+    ```
+    Since cache control setting is file level and only can be set to the existing file,
+    for now we need to create {liveblog}.json first and finish.
+    [on-going]: A pub/sub job will be created to set created file cache control.
+-  Setup cors configuration (bucket level)
+    command to set cors
+    ```
+    gsutil cors set cors-json-file gs://<bucket_name>...
+    ```
+    command to get cors
+    ```
+    gsutil cors get gs://<bucket_name>
+    ```
+
+**Liveblog renderer - Storytelling**
+- There will be two condition to show liveblog
+    1. View liveblog directly from storytelling
+        [pelosi liveblog](https://storytelling.readr.tw/liveblog?liveblog=2022_pelosi)
+    2. View liveblog from other website with iframe of storytelling
+        ```
+        <iframe  style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 600" src="https://storytelling.readr.tw/liveblog?liveblog=2022_pelosi" title="Liveblog"></iframe>
+        ```
+        [to-do]: add script to create iframe in editools cms (need storytelling env.variable)
+- Url Params: `liveblog={name-of-liveblog.json}`
+- ENV.variable: `GCS_BUCKET_URL` 
+
 ## API Endpoint Configuration
 
 There are some enviroment variables for API Endpoint customization.
