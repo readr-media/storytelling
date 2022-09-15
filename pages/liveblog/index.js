@@ -46,8 +46,6 @@ export default function LiveBlog({
     }
   }, [fetchLiveblogUrl, initialLiveblog])
 
-  console.log('initialLiveblog', initialLiveblog)
-
   if (!fetchLiveblogUrl) return <p>Please asign liveblog slug name</p>
 
   return (
