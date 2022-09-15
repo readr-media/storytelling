@@ -14,10 +14,12 @@ const Title = styled.div`
   font-size: 24px;
   font-weight: 700;
   line-height: 34.75px;
+  padding: 0 128px;
 
   @media (max-width: 768px) {
     font-size: 18px;
     line-height: 26px;
+    padding: 0;
   }
 `
 
@@ -39,9 +41,11 @@ const DraftEditorWrapper = styled.div`
   min-height: ${({ expanded, height }) => (expanded ? `${height}px` : 'unset')};
   font-size: 16px;
   line-height: 1.5;
+  padding: 0 128px;
 
   @media (max-width: 768px) {
     font-size: 14px;
+    padding: 0;
   }
 `
 

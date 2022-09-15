@@ -53,7 +53,7 @@ const LiveBlogItemWrapper = styled.div`
 
 const LiveBlogWrapper = styled.div`
   border: 1px solid #000;
-  padding: 20px 128px 56px 128px;
+  padding: 20px 12px 56px 12px;
 
   @media (max-width: 768px) {
     padding: 28px 12px 56px 12px;
