@@ -49,6 +49,13 @@ const DraftEditorWrapper = styled.div`
   }
 `
 
+const ImgCaption = styled.div`
+  color: #999999;
+  text-align: center;
+  font-size: 9px;
+  margin-top: 4px;
+`
+
 // 5 lines of normal text
 const defaultContentHeight = 87.5
 
@@ -123,6 +130,7 @@ export default function LiveBlogItemContent({
       <Title>{article.title}</Title>
       <HeroImageWrapper>
         <img src={heroImage.url} alt={heroImage.name} />
+        {heroImage.name ? <ImgCaption>圖說：{heroImage.name}</ImgCaption> : ''}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
