@@ -14,7 +14,7 @@ const Title = styled.div`
   font-size: 24px;
   font-weight: 700;
   line-height: 34.75px;
-  padding: 0 128px;
+  padding: 0 116px;
 
   @media (max-width: 768px) {
     font-size: 18px;
@@ -41,7 +41,7 @@ const DraftEditorWrapper = styled.div`
   min-height: ${({ expanded, height }) => (expanded ? `${height}px` : 'unset')};
   font-size: 16px;
   line-height: 1.5;
-  padding: 0 128px;
+  padding: 0 116px;
 
   @media (max-width: 768px) {
     font-size: 14px;
@@ -51,7 +51,7 @@ const DraftEditorWrapper = styled.div`
 
 const ImgCaption = styled.div`
   color: #999999;
-  text-align: center;
+  text-align: left;
   font-size: 9px;
   margin-top: 4px;
 `
@@ -130,7 +130,7 @@ export default function LiveBlogItemContent({
       <Title>{article.title}</Title>
       <HeroImageWrapper>
         <img src={heroImage.url} alt={heroImage.name} />
-        {heroImage.name ? <ImgCaption>圖說：{heroImage.name}</ImgCaption> : ''}
+        {heroImage.name && <ImgCaption>圖說：{heroImage.name}</ImgCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
