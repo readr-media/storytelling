@@ -14,10 +14,12 @@ const Title = styled.div`
   font-size: 24px;
   font-weight: 700;
   line-height: 34.75px;
+  padding: 0 116px;
 
   @media (max-width: 768px) {
     font-size: 18px;
     line-height: 26px;
+    padding: 0;
   }
 `
 
@@ -39,10 +41,19 @@ const DraftEditorWrapper = styled.div`
   min-height: ${({ expanded, height }) => (expanded ? `${height}px` : 'unset')};
   font-size: 16px;
   line-height: 1.5;
+  padding: 0 116px;
 
   @media (max-width: 768px) {
     font-size: 14px;
+    padding: 0;
   }
+`
+
+const ImgCaption = styled.div`
+  color: #999999;
+  text-align: left;
+  font-size: 9px;
+  margin-top: 4px;
 `
 
 // 5 lines of normal text
@@ -119,6 +130,7 @@ export default function LiveBlogItemContent({
       <Title>{article.title}</Title>
       <HeroImageWrapper>
         <img src={heroImage.url} alt={heroImage.name} />
+        {heroImage.name && <ImgCaption>圖說：{heroImage.name}</ImgCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
