@@ -71,3 +71,4 @@ There are some enviroment variables for API Endpoint customization.
 * `RECAPTCHA_SITE_KEY` : reCAPTCHA Enterprise site key
 * `RECAPTCHA_SCORE_BOUNDARY` : reCAPTCHA score assessment boundary, 0.1, 0.3, 0.7 and 0.9
 * `CORS_ORIGINS` : CORS allow origin setting.  A string represent of a collection of URLs.  Each URL is seperated by comman(,), e.g., `"http://localhost,http://www.google.com"`.
+* `LEGAL_IMAGE_DOMAINS` : NEXT config to white list the legal image domains
