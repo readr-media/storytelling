@@ -8,6 +8,10 @@ const Category = styled.span`
   line-height: 14px;
   margin-right: 8px;
   color: #999;
+  padding: 0 116px;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `
 
 const PublishInfoWrapper = styled.div`
@@ -15,10 +19,12 @@ const PublishInfoWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 116px;
 
   @media (max-width: 768px) {
     align-items: start;
     flex-direction: column;
+    padding: 0;
   }
 `
 
