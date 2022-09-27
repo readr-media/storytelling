@@ -5,6 +5,7 @@ import Intro from '../components/Intro'
 import LiveBlogControl from '../components/LiveBlogControl'
 import LiveBlogItems from '../components/LiveBlogItems'
 import LiveBlogWrapper from '../components/LiveBlogWrapper'
+import LiveBlogTags from '../components/LiveBlogTag'
 
 const initialShowingCount = 5
 
@@ -16,6 +17,29 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const [showingLiveblogItems, setShowingLiveblogItems] = useState([])
   const [newToOld, setNewToOld] = useState(true)
   const loadingMoreRef = useRef(false)
+  const [tagFilteredBlogItems, setTagFilteredBlogItems] = useState([])
+
+  //Get Tags
+  const tagsArr = liveblog?.liveblog_items
+    .map((liveblogItem) => liveblogItem.tags?.name)
+    .filter((item) => item)
+  const uniqTags = [...new Set(tagsArr)].map((string) => string.slice(0, 4))
+
+  // Get activeTags from child
+  const getActiveTagsHandler = (clickedTags) => {
+    const activeTags = clickedTags
+    console.log('activeTags in parent', activeTags)
+  }
+
+  useEffect(() => {
+    const allBlogItems = liveblog?.liveblog_items
+    console.log(allBlogItems)
+
+    // const filteredBlogItems = allBlogItems.filter((item) =>
+    //   item.tags?.name.includes([...activeTags])
+    // )
+    // console.log(filteredBlogItems)
+  }, [tagFilteredBlogItems])
 
   useEffect(() => {
     if (liveblog?.liveblog_items) {
@@ -86,6 +110,7 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
           setShowingCount(initialShowingCount)
         }}
       />
+      <LiveBlogTags tags={uniqTags} onGetActiveTags={getActiveTagsHandler} />
       <LiveBlogItems
         articles={showingLiveblogItems}
         pinedArticles={boostedLiveblogItems}
