@@ -17,7 +17,8 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const [showingLiveblogItems, setShowingLiveblogItems] = useState([])
   const [newToOld, setNewToOld] = useState(true)
   const loadingMoreRef = useRef(false)
-  const [tagFilteredBlogItems, setTagFilteredBlogItems] = useState([])
+  const [activeTags, setActiveTags] = useState([])
+  const [filteredBlogItems, seFilteredBlogItems] = useState([])
 
   //Get Tags
   const tagsArr = liveblog?.liveblog_items
@@ -25,21 +26,13 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
     .filter((item) => item)
   const uniqTags = [...new Set(tagsArr)].map((string) => string.slice(0, 4))
 
-  // Get activeTags from child
-  const getActiveTagsHandler = (clickedTags) => {
-    const activeTags = clickedTags
-    console.log('activeTags in parent', activeTags)
-  }
-
+  //Filter blog items by active tags
   useEffect(() => {
-    const allBlogItems = liveblog?.liveblog_items
-    console.log(allBlogItems)
-
-    // const filteredBlogItems = allBlogItems.filter((item) =>
-    //   item.tags?.name.includes([...activeTags])
-    // )
-    // console.log(filteredBlogItems)
-  }, [tagFilteredBlogItems])
+    const filteredBlogItems = liveblog?.liveblog_items.filter((item) =>
+      activeTags.includes(item.tags?.name.slice(0, 4))
+    )
+    seFilteredBlogItems(filteredBlogItems)
+  }, [activeTags])
 
   useEffect(() => {
     if (liveblog?.liveblog_items) {
@@ -110,9 +103,16 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
           setShowingCount(initialShowingCount)
         }}
       />
-      <LiveBlogTags tags={uniqTags} onGetActiveTags={getActiveTagsHandler} />
+      <LiveBlogTags
+        tags={uniqTags}
+        onGetActiveTags={setActiveTags}
+        activeTags={activeTags}
+        setActiveTags={setActiveTags}
+      />
       <LiveBlogItems
-        articles={showingLiveblogItems}
+        articles={
+          activeTags.length > 0 ? filteredBlogItems : showingLiveblogItems
+        }
         pinedArticles={boostedLiveblogItems}
         fetchImageBaseUrl={fetchImageBaseUrl}
       />

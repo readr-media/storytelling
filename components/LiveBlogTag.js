@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styled, { css } from 'styled-components'
 
 const Tag = styled('button')`
@@ -39,9 +38,7 @@ const TagsWrapper = styled.div`
   }
 `
 
-export default function LiveBlogTags({ tags, onGetActiveTags }) {
-  const [activeTags, setActiveTags] = useState([])
-
+export default function LiveBlogTags({ tags, activeTags, setActiveTags }) {
   const handleClicked = (e) => {
     const clickedTagName = e.target.textContent
     if (activeTags.includes(clickedTagName)) {
@@ -49,7 +46,6 @@ export default function LiveBlogTags({ tags, onGetActiveTags }) {
     } else {
       setActiveTags([...activeTags, clickedTagName])
     }
-    onGetActiveTags(activeTags)
   }
 
   return (
