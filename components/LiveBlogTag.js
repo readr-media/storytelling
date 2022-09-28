@@ -38,13 +38,13 @@ const TagsWrapper = styled.div`
   }
 `
 
-export default function LiveBlogTags({ tags, activeTags, setActiveTags }) {
+export default function LiveBlogTags({ tags, activeTags, updateActiveTags }) {
   const handleClicked = (e) => {
     const clickedTagName = e.target.textContent
     if (activeTags.includes(clickedTagName)) {
-      setActiveTags(activeTags.filter((tag) => tag !== clickedTagName))
+      updateActiveTags(activeTags.filter((tag) => tag !== clickedTagName))
     } else {
-      setActiveTags([...activeTags, clickedTagName])
+      updateActiveTags([...activeTags, clickedTagName])
     }
   }
 

@@ -19,7 +19,6 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const [newToOld, setNewToOld] = useState(true)
   const loadingMoreRef = useRef(false)
   const [activeTags, setActiveTags] = useState([])
-  const [filteredBlogItems, seFilteredBlogItems] = useState([])
   const [firstMounted, setFirstMounted] = useState(true)
 
   //Get Tags
@@ -27,14 +26,6 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
     .map((liveblogItem) => liveblogItem.tags?.name)
     .filter((item) => item)
   const uniqTags = [...new Set(tagsArr)].map((string) => string.slice(0, 4))
-
-  //Filter blog items by active tags
-  useEffect(() => {
-    const filteredBlogItems = liveblog?.liveblog_items.filter((item) =>
-      activeTags.includes(item.tags?.name.slice(0, 4))
-    )
-    seFilteredBlogItems(filteredBlogItems)
-  }, [liveblog, activeTags])
 
   useEffect(() => {
     if (liveblog?.liveblog_items) {
@@ -49,7 +40,12 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
         })
 
       const liveblogItemsToShow = liveblogItemsRef.current
-        .filter((liveblogItem) => !liveblogItem.boost)
+        .filter((liveblogItem) =>
+          activeTags.length
+            ? activeTags.includes(liveblogItem.tags?.name.slice(0, 4)) &&
+              !liveblogItem.boost
+            : !liveblogItem.boost
+        )
         .sort((a, b) => {
           const tsA = moment(a.publishTime).valueOf()
           const tsB = moment(b.publishTime).valueOf()
@@ -63,14 +59,13 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
         setShowingCount(Math.ceil((index + 1) / 5) * 5)
         setFirstMounted(false)
       }
-
       const showingLiveblogItems = liveblogItemsToShow.slice(0, showingCount)
 
       setBoostedLiveblogItems(boostedLiveblogItems)
       setShowingLiveblogItems(showingLiveblogItems)
       loadingMoreRef.current = false
     }
-  }, [liveblog, newToOld, showingCount, firstMounted])
+  }, [liveblog, newToOld, showingCount, firstMounted, activeTags])
 
   // handle loadmore
   useEffect(() => {
@@ -117,12 +112,13 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
       <LiveBlogTags
         tags={uniqTags}
         activeTags={activeTags}
-        setActiveTags={setActiveTags}
+        updateActiveTags={(activeTags) => {
+          setShowingCount(initialShowingCount)
+          setActiveTags(activeTags)
+        }}
       />
       <LiveBlogItems
-        articles={
-          activeTags.length > 0 ? filteredBlogItems : showingLiveblogItems
-        }
+        articles={showingLiveblogItems}
         pinedArticles={boostedLiveblogItems}
         fetchImageBaseUrl={fetchImageBaseUrl}
       />
