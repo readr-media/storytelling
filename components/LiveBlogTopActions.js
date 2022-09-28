@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { liveblogItemId } from '../utils/anchor-scroll-helper'
 
 const Wrapper = styled.div`
   position: absolute;
@@ -53,11 +52,20 @@ const LightboxButtons = styled.div`
   }
 `
 
+const LightboxButton = styled.button`
+  margin-left: 16px;
+
+  @media (max-width: 768px) {
+    margin-left: 12px;
+  }
+`
+
 export default function LiveBlogTopActions({
   pined,
+  showToast,
   showLightbox,
   showAsLightbox,
-  id,
+  type,
 }) {
   return (
     <Wrapper>
@@ -70,26 +78,25 @@ export default function LiveBlogTopActions({
         <div />
       )}
       <LightboxButtons>
-        <button
-          onClick={() =>
-            window.open(
-              new URLSearchParams(window.location.search).get('url') +
-                `#${liveblogItemId(id)}`,
-              '_blank'
-            )
-          }
-        >
-          <img
-            src={`/images/${showAsLightbox ? 'icon-close' : 'icon-expand'}.svg`}
-            alt="expand article"
-          />
-        </button>
-        <button onClick={() => showLightbox()}>
-          <img
-            src={`/images/${showAsLightbox ? 'icon-close' : 'icon-expand'}.svg`}
-            alt="expand article"
-          />
-        </button>
+        {type !== 'external' ? (
+          <>
+            <LightboxButton onClick={showToast.bind(null, '已複製連結')}>
+              <img src={`/images/icon-copy-link.svg`} alt="expand article" />
+            </LightboxButton>
+            <LightboxButton onClick={showLightbox}>
+              <img
+                src={`/images/${
+                  showAsLightbox ? 'icon-close' : 'icon-expand'
+                }.svg`}
+                alt="expand article"
+              />
+            </LightboxButton>
+          </>
+        ) : (
+          <LightboxButton>
+            <img src={'/images/icon-external.svg'} alt="open external link" />
+          </LightboxButton>
+        )}
       </LightboxButtons>
     </Wrapper>
   )

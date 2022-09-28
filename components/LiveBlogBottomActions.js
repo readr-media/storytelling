@@ -30,7 +30,7 @@ const ExpandButton = styled.button`
 export default function LiveBlogBottomActions({ onClick, expanded }) {
   return (
     <Wrapper>
-      <ExpandButton onClick={() => onClick()}>
+      <ExpandButton onClick={onClick}>
         {expanded ? '顯示較少' : '繼續閱讀'}
       </ExpandButton>
     </Wrapper>

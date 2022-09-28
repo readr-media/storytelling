@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import LiveBlogItem from './LiveBlogItem'
+import LiveBlogItemExternal from './LiveBlogItemExternal'
 
 const Wrapper = styled.div`
   margin-top: 29px;
@@ -20,21 +21,38 @@ export default function LiveBlogItems({
 }) {
   return (
     <Wrapper>
-      {pinedArticles.map((article) => (
-        <LiveBlogItem
-          key={article.id}
-          pined
-          article={article}
-          fetchImageBaseUrl={fetchImageBaseUrl}
-        />
-      ))}
-      {articles.map((article) => (
-        <LiveBlogItem
-          key={article.id}
-          article={article}
-          fetchImageBaseUrl={fetchImageBaseUrl}
-        />
-      ))}
+      {pinedArticles.map((article) =>
+        article.type !== 'external' ? (
+          <LiveBlogItem
+            key={article.id}
+            pined
+            article={article}
+            fetchImageBaseUrl={fetchImageBaseUrl}
+          />
+        ) : (
+          <LiveBlogItemExternal
+            key={article.id}
+            pined
+            article={article}
+            fetchImageBaseUrl={fetchImageBaseUrl}
+          />
+        )
+      )}
+      {articles.map((article) =>
+        article.type !== 'external' ? (
+          <LiveBlogItem
+            key={article.id}
+            article={article}
+            fetchImageBaseUrl={fetchImageBaseUrl}
+          />
+        ) : (
+          <LiveBlogItemExternal
+            key={article.id}
+            article={article}
+            fetchImageBaseUrl={fetchImageBaseUrl}
+          />
+        )
+      )}
     </Wrapper>
   )
 }

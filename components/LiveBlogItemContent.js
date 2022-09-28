@@ -129,8 +129,16 @@ export default function LiveBlogItemContent({
     <Wrapper>
       <Title>{article.title}</Title>
       <HeroImageWrapper>
-        <img src={heroImage.url} alt={heroImage.name} />
-        {heroImage.name && <ImgCaption>圖說：{heroImage.name}</ImgCaption>}
+        <img
+          src={`${heroImage?.url || 'empty'}`}
+          alt={heroImage?.name}
+          onError={(e) => {
+            if (article.externalCoverPhoto) {
+              e.target.src = article.externalCoverPhoto
+            }
+          }}
+        />
+        {heroImage?.name && <ImgCaption>圖說：{heroImage?.name}</ImgCaption>}
       </HeroImageWrapper>
       <DraftEditorWrapper
         expanded={expanded}
