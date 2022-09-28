@@ -4,6 +4,7 @@ import { liveblogItemId } from '../utils/anchor-scroll-helper'
 import LiveBlogBottomActions from './LiveBlogBottomActions'
 import LiveBlogItemContent from './LiveBlogItemContent'
 import LiveBlogItemHeader from './LiveBlogItemHeader'
+import LiveBlogToast from './LiveBlogToast'
 import LiveBlogTopActions from './LiveBlogTopActions'
 
 const GlobalStyles = createGlobalStyle`
@@ -13,6 +14,7 @@ const GlobalStyles = createGlobalStyle`
 `
 
 const Wrapper = styled.div`
+  position: relative;
   ${({ showAsLightbox }) => {
     if (showAsLightbox) {
       return `
@@ -72,6 +74,7 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
   const [expanded, setExpanded] = useState(false)
   const [showAsLightbox, setShowAsLightbox] = useState(false)
   const [hideExpandButton, setHideExpandButton] = useState(false)
+  const [toast, setToast] = useState({ show: false, message: '' })
   const wrapperRef = useRef()
 
   useEffect(() => {
@@ -112,8 +115,19 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
         e.stopPropagation()
       }}
     >
+      {toast.show && <LiveBlogToast message={toast.message} />}
       <LiveBlogTopActions
         pined={pined}
+        showToast={(message) => {
+          const copyUrl =
+            (new URLSearchParams(window.location.search).get('url') ||
+              document.location.href) + `#${liveblogItemId(article.id)}`
+          navigator.clipboard.writeText(copyUrl)
+          setToast({ show: true, message })
+          setTimeout(() => {
+            setToast({ show: false, mesrsage: '' })
+          }, 500)
+        }}
         showLightbox={showLightboxClickedHandler}
         showAsLightbox={showAsLightbox}
         id={article.id}
