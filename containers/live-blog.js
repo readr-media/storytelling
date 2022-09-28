@@ -105,7 +105,6 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
       />
       <LiveBlogTags
         tags={uniqTags}
-        onGetActiveTags={setActiveTags}
         activeTags={activeTags}
         setActiveTags={setActiveTags}
       />
