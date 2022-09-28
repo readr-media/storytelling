@@ -6,6 +6,7 @@ import LiveBlogControl from '../components/LiveBlogControl'
 import LiveBlogItems from '../components/LiveBlogItems'
 import LiveBlogWrapper from '../components/LiveBlogWrapper'
 import LiveBlogTags from '../components/LiveBlogTag'
+import { liveblogItemId } from '../utils/anchor-scroll-helper'
 
 const initialShowingCount = 5
 
@@ -19,6 +20,7 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const loadingMoreRef = useRef(false)
   const [activeTags, setActiveTags] = useState([])
   const [filteredBlogItems, seFilteredBlogItems] = useState([])
+  const [firstMounted, setFirstMounted] = useState(true)
 
   //Get Tags
   const tagsArr = liveblog?.liveblog_items
@@ -32,7 +34,7 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
       activeTags.includes(item.tags?.name.slice(0, 4))
     )
     seFilteredBlogItems(filteredBlogItems)
-  }, [activeTags])
+  }, [liveblog, activeTags])
 
   useEffect(() => {
     if (liveblog?.liveblog_items) {
@@ -46,20 +48,29 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
           return newToOld ? tsB - tsA : tsA - tsB
         })
 
-      const showingLiveblogItems = liveblogItemsRef.current
+      const liveblogItemsToShow = liveblogItemsRef.current
         .filter((liveblogItem) => !liveblogItem.boost)
         .sort((a, b) => {
           const tsA = moment(a.publishTime).valueOf()
           const tsB = moment(b.publishTime).valueOf()
           return newToOld ? tsB - tsA : tsA - tsB
         })
-        .slice(0, showingCount)
+      if (document.location.hash && firstMounted) {
+        const index = liveblogItemsToShow.findIndex(
+          (liveblogItem) =>
+            `#${liveblogItemId(liveblogItem.id)}` === document.location.hash
+        )
+        setShowingCount(Math.ceil((index + 1) / 5) * 5)
+        setFirstMounted(false)
+      }
+
+      const showingLiveblogItems = liveblogItemsToShow.slice(0, showingCount)
 
       setBoostedLiveblogItems(boostedLiveblogItems)
       setShowingLiveblogItems(showingLiveblogItems)
       loadingMoreRef.current = false
     }
-  }, [liveblog, newToOld, showingCount])
+  }, [liveblog, newToOld, showingCount, firstMounted])
 
   // handle loadmore
   useEffect(() => {
