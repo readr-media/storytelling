@@ -1,17 +1,19 @@
 import styled from 'styled-components'
 import moment from 'moment'
 
-const Category = styled.span`
-  font-weight: 900;
-  font-size: 12px;
-  transform: scale(calc(10 / 12));
-  line-height: 14px;
-  margin-right: 8px;
-  color: #999;
+const CategoryWrapper = styled.div`
   padding: 0 116px;
   @media (max-width: 768px) {
     padding: 0;
   }
+`
+
+const Category = styled.span`
+  font-weight: 900;
+  font-size: 12px;
+  line-height: 14px;
+  margin-right: 8px;
+  color: #999;
 `
 
 const PublishInfoWrapper = styled.div`
@@ -78,20 +80,35 @@ moment.locale('zh-tw', {
 export default function LiveBlogItemHeader({ article }) {
   return (
     <div>
-      <div>{article.tags && <Category>{article.tags.name}</Category>}</div>
-      <PublishInfoWrapper>
-        <PublisherWrapper>
-          {/* <PublisherAvatar /> */}
-          <PublisherName>
-            {article.author ? `記者：${article.author}` : ''}
-          </PublisherName>
-        </PublisherWrapper>
-        <PublishDate>
-          {moment(article.publishTime)
-            .locale('zh_tw')
-            .format('YYYY年MM月DD日 dddd HH:mm')}
-        </PublishDate>
-      </PublishInfoWrapper>
+      {article.type !== 'external' ? (
+        <>
+          <CategoryWrapper>
+            {article.tags && <Category>{article.tags.name}</Category>}
+          </CategoryWrapper>
+          <PublishInfoWrapper>
+            <PublisherWrapper>
+              {/* <PublisherAvatar /> */}
+              <PublisherName>
+                {article.author ? `記者：${article.author}` : ''}
+              </PublisherName>
+            </PublisherWrapper>
+            <PublishDate>
+              {moment(article.publishTime)
+                .locale('zh_tw')
+                .format('YYYY年MM月DD日 dddd HH:mm')}
+            </PublishDate>
+          </PublishInfoWrapper>
+        </>
+      ) : (
+        <PublishInfoWrapper>
+          <div>{article.tags && <Category>{article.tags.name}</Category>}</div>
+          <PublishDate>
+            {moment(article.publishTime)
+              .locale('zh_tw')
+              .format('YYYY年MM月DD日 dddd HH:mm')}
+          </PublishDate>
+        </PublishInfoWrapper>
+      )}
     </div>
   )
 }

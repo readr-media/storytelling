@@ -58,6 +58,7 @@ export default function LiveBlogTopActions({
   showLightbox,
   showAsLightbox,
   id,
+  type,
 }) {
   return (
     <Wrapper>
@@ -70,26 +71,38 @@ export default function LiveBlogTopActions({
         <div />
       )}
       <LightboxButtons>
-        <button
-          onClick={() =>
-            window.open(
-              new URLSearchParams(window.location.search).get('url') +
-                `#${liveblogItemId(id)}`,
-              '_blank'
-            )
-          }
-        >
-          <img
-            src={`/images/${showAsLightbox ? 'icon-close' : 'icon-expand'}.svg`}
-            alt="expand article"
-          />
-        </button>
-        <button onClick={() => showLightbox()}>
-          <img
-            src={`/images/${showAsLightbox ? 'icon-close' : 'icon-expand'}.svg`}
-            alt="expand article"
-          />
-        </button>
+        {type !== 'external' ? (
+          <>
+            <button
+              onClick={() =>
+                window.open(
+                  new URLSearchParams(window.location.search).get('url') +
+                    `#${liveblogItemId(id)}`,
+                  '_blank'
+                )
+              }
+            >
+              <img
+                src={`/images/${
+                  showAsLightbox ? 'icon-close' : 'icon-expand'
+                }.svg`}
+                alt="expand article"
+              />
+            </button>
+            <button onClick={() => showLightbox()}>
+              <img
+                src={`/images/${
+                  showAsLightbox ? 'icon-close' : 'icon-expand'
+                }.svg`}
+                alt="expand article"
+              />
+            </button>
+          </>
+        ) : (
+          <button>
+            <img src={'/images/icon-external.svg'} alt="open external link" />
+          </button>
+        )}
       </LightboxButtons>
     </Wrapper>
   )

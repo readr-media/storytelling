@@ -91,7 +91,8 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
     }
   }, [])
 
-  const expandClickedHandler = () => {
+  const expandClickedHandler = (e) => {
+    e.stopPropagation()
     setExpanded((expanded) => !expanded)
   }
 
@@ -116,6 +117,7 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
         showLightbox={showLightboxClickedHandler}
         showAsLightbox={showAsLightbox}
         id={article.id}
+        type={article.type}
       />
       <LiveBlogWrapper>
         <LiveBlog>
