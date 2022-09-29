@@ -107,6 +107,24 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
     setShowAsLightbox(false)
   }
 
+  const copyLiveblogItemUrl = () => {
+    const hostingUrlObject = new URL(
+      new URLSearchParams(window.location.search).get('url') ||
+        document.location.href
+    )
+    // replace old hash on url with clicking one
+    hostingUrlObject.hash = liveblogItemId(article.id)
+    navigator.clipboard.writeText(hostingUrlObject.toString())
+  }
+
+  const copyUrlHandler = () => {
+    copyLiveblogItemUrl()
+    setToast({ show: true, message: '已複製連結' })
+    setTimeout(() => {
+      setToast({ show: false, mesrsage: '' })
+    }, 500)
+  }
+
   const LiveBlogItem = (
     <LiveBlogItemWrapper
       pined={pined}
@@ -118,16 +136,7 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
       {toast.show && <LiveBlogToast message={toast.message} />}
       <LiveBlogTopActions
         pined={pined}
-        showToast={(message) => {
-          const copyUrl =
-            (new URLSearchParams(window.location.search).get('url') ||
-              document.location.href) + `#${liveblogItemId(article.id)}`
-          navigator.clipboard.writeText(copyUrl)
-          setToast({ show: true, message })
-          setTimeout(() => {
-            setToast({ show: false, mesrsage: '' })
-          }, 500)
-        }}
+        copyUrlHandler={copyUrlHandler}
         showLightbox={showLightboxClickedHandler}
         showAsLightbox={showAsLightbox}
         id={article.id}

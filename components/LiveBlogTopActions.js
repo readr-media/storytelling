@@ -62,7 +62,7 @@ const LightboxButton = styled.button`
 
 export default function LiveBlogTopActions({
   pined,
-  showToast,
+  copyUrlHandler,
   showLightbox,
   showAsLightbox,
   type,
@@ -80,7 +80,7 @@ export default function LiveBlogTopActions({
       <LightboxButtons>
         {type !== 'external' ? (
           <>
-            <LightboxButton onClick={showToast.bind(null, '已複製連結')}>
+            <LightboxButton onClick={copyUrlHandler}>
               <img src={`/images/icon-copy-link.svg`} alt="expand article" />
             </LightboxButton>
             <LightboxButton onClick={showLightbox}>
