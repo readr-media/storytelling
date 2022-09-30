@@ -32,7 +32,12 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
       liveblogItemsRef.current = liveblog.liveblog_items
 
       const boostedLiveblogItems = liveblogItemsRef.current
-        .filter((liveblogItem) => liveblogItem.boost)
+        .filter((liveblogItem) =>
+          activeTags.length
+            ? activeTags.includes(liveblogItem.tags?.name.slice(0, 4)) &&
+              liveblogItem.boost
+            : liveblogItem.boost
+        )
         .sort((a, b) => {
           const tsA = moment(a.publishTime).valueOf()
           const tsB = moment(b.publishTime).valueOf()
