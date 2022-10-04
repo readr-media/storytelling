@@ -130,13 +130,8 @@ export default function LiveBlogItemContent({
       <Title>{article.title}</Title>
       <HeroImageWrapper>
         <img
-          src={`${heroImage?.url || 'empty'}`}
+          src={heroImage?.url || article.externalCoverPhoto}
           alt={heroImage?.name}
-          onError={(e) => {
-            if (article.externalCoverPhoto) {
-              e.target.src = article.externalCoverPhoto
-            }
-          }}
         />
         {heroImage?.name && <ImgCaption>圖說：{heroImage?.name}</ImgCaption>}
       </HeroImageWrapper>
