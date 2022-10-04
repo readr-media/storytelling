@@ -5,6 +5,8 @@ import Intro from '../components/Intro'
 import LiveBlogControl from '../components/LiveBlogControl'
 import LiveBlogItems from '../components/LiveBlogItems'
 import LiveBlogWrapper from '../components/LiveBlogWrapper'
+import LiveBlogTags from '../components/LiveBlogTag'
+import { liveblogItemId } from '../utils/anchor-scroll-helper'
 
 const initialShowingCount = 5
 
@@ -16,33 +18,59 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
   const [showingLiveblogItems, setShowingLiveblogItems] = useState([])
   const [newToOld, setNewToOld] = useState(true)
   const loadingMoreRef = useRef(false)
+  const [activeTags, setActiveTags] = useState([])
+  const [firstMounted, setFirstMounted] = useState(true)
+
+  //Get Tags
+  const tagsArr = liveblog?.liveblog_items
+    .map((liveblogItem) => liveblogItem.tags?.name)
+    .filter((item) => item)
+  const uniqTags = [...new Set(tagsArr)].map((string) => string.slice(0, 4))
 
   useEffect(() => {
     if (liveblog?.liveblog_items) {
       liveblogItemsRef.current = liveblog.liveblog_items
 
       const boostedLiveblogItems = liveblogItemsRef.current
-        .filter((liveblogItem) => liveblogItem.boost)
+        .filter((liveblogItem) =>
+          activeTags.length
+            ? activeTags.includes(liveblogItem.tags?.name.slice(0, 4)) &&
+              liveblogItem.boost
+            : liveblogItem.boost
+        )
         .sort((a, b) => {
           const tsA = moment(a.publishTime).valueOf()
           const tsB = moment(b.publishTime).valueOf()
           return newToOld ? tsB - tsA : tsA - tsB
         })
 
-      const showingLiveblogItems = liveblogItemsRef.current
-        .filter((liveblogItem) => !liveblogItem.boost)
+      const liveblogItemsToShow = liveblogItemsRef.current
+        .filter((liveblogItem) =>
+          activeTags.length
+            ? activeTags.includes(liveblogItem.tags?.name.slice(0, 4)) &&
+              !liveblogItem.boost
+            : !liveblogItem.boost
+        )
         .sort((a, b) => {
           const tsA = moment(a.publishTime).valueOf()
           const tsB = moment(b.publishTime).valueOf()
           return newToOld ? tsB - tsA : tsA - tsB
         })
-        .slice(0, showingCount)
+      if (document.location.hash && firstMounted) {
+        const index = liveblogItemsToShow.findIndex(
+          (liveblogItem) =>
+            `#${liveblogItemId(liveblogItem.id)}` === document.location.hash
+        )
+        setShowingCount(Math.ceil((index + 1) / 5) * 5)
+        setFirstMounted(false)
+      }
+      const showingLiveblogItems = liveblogItemsToShow.slice(0, showingCount)
 
       setBoostedLiveblogItems(boostedLiveblogItems)
       setShowingLiveblogItems(showingLiveblogItems)
       loadingMoreRef.current = false
     }
-  }, [liveblog, newToOld, showingCount])
+  }, [liveblog, newToOld, showingCount, firstMounted, activeTags])
 
   // handle loadmore
   useEffect(() => {
@@ -84,6 +112,14 @@ export default function LiveBlogContainr({ liveblog, fetchImageBaseUrl }) {
         onChangeOrder={() => {
           setNewToOld((value) => !value)
           setShowingCount(initialShowingCount)
+        }}
+      />
+      <LiveBlogTags
+        tags={uniqTags}
+        activeTags={activeTags}
+        updateActiveTags={(activeTags) => {
+          setShowingCount(initialShowingCount)
+          setActiveTags(activeTags)
         }}
       />
       <LiveBlogItems

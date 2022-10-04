@@ -44,7 +44,7 @@ const PinedIcon = styled.img`
   }
 `
 
-const LightboxButton = styled.button`
+const LightboxButtons = styled.div`
   margin: 16px 16px 0 0;
 
   @media (max-width: 768px) {
@@ -52,10 +52,20 @@ const LightboxButton = styled.button`
   }
 `
 
+const LightboxButton = styled.button`
+  margin-left: 16px;
+
+  @media (max-width: 768px) {
+    margin-left: 12px;
+  }
+`
+
 export default function LiveBlogTopActions({
   pined,
+  copyUrlHandler,
   showLightbox,
   showAsLightbox,
+  type,
 }) {
   return (
     <Wrapper>
@@ -67,13 +77,27 @@ export default function LiveBlogTopActions({
       ) : (
         <div />
       )}
-
-      <LightboxButton onClick={() => showLightbox()}>
-        <img
-          src={`/images/${showAsLightbox ? 'icon-close' : 'icon-expand'}.svg`}
-          alt="expand article"
-        />
-      </LightboxButton>
+      <LightboxButtons>
+        {type !== 'external' ? (
+          <>
+            <LightboxButton onClick={copyUrlHandler}>
+              <img src={`/images/icon-copy-link.svg`} alt="expand article" />
+            </LightboxButton>
+            <LightboxButton onClick={showLightbox}>
+              <img
+                src={`/images/${
+                  showAsLightbox ? 'icon-close' : 'icon-expand'
+                }.svg`}
+                alt="expand article"
+              />
+            </LightboxButton>
+          </>
+        ) : (
+          <LightboxButton>
+            <img src={'/images/icon-external.svg'} alt="open external link" />
+          </LightboxButton>
+        )}
+      </LightboxButtons>
     </Wrapper>
   )
 }

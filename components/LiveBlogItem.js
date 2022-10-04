@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
+import { liveblogItemId } from '../utils/anchor-scroll-helper'
 import LiveBlogBottomActions from './LiveBlogBottomActions'
 import LiveBlogItemContent from './LiveBlogItemContent'
 import LiveBlogItemHeader from './LiveBlogItemHeader'
+import LiveBlogToast from './LiveBlogToast'
 import LiveBlogTopActions from './LiveBlogTopActions'
 
 const GlobalStyles = createGlobalStyle`
@@ -12,6 +14,7 @@ const GlobalStyles = createGlobalStyle`
 `
 
 const Wrapper = styled.div`
+  position: relative;
   ${({ showAsLightbox }) => {
     if (showAsLightbox) {
       return `
@@ -65,10 +68,14 @@ const LiveBlog = styled.div`
   height: 100%;
 `
 
+let pageWasScrolled = false
+
 export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
   const [expanded, setExpanded] = useState(false)
   const [showAsLightbox, setShowAsLightbox] = useState(false)
   const [hideExpandButton, setHideExpandButton] = useState(false)
+  const [toast, setToast] = useState({ show: false, message: '' })
+  const wrapperRef = useRef()
 
   useEffect(() => {
     if (showAsLightbox) {
@@ -76,7 +83,19 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
     }
   }, [showAsLightbox])
 
-  const expandClickedHandler = () => {
+  useEffect(() => {
+    if (
+      document.location.hash &&
+      `#${wrapperRef.current.id}` === document.location.hash &&
+      !pageWasScrolled
+    ) {
+      wrapperRef.current.scrollIntoView()
+      pageWasScrolled = true
+    }
+  }, [])
+
+  const expandClickedHandler = (e) => {
+    e.stopPropagation()
     setExpanded((expanded) => !expanded)
   }
 
@@ -88,6 +107,24 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
     setShowAsLightbox(false)
   }
 
+  const copyLiveblogItemUrl = () => {
+    const hostingUrlObject = new URL(
+      new URLSearchParams(window.location.search).get('url') ||
+        document.location.href
+    )
+    // replace old hash on url with clicking one
+    hostingUrlObject.hash = liveblogItemId(article.id)
+    navigator.clipboard.writeText(hostingUrlObject.toString())
+  }
+
+  const copyUrlHandler = () => {
+    copyLiveblogItemUrl()
+    setToast({ show: true, message: '已複製連結' })
+    setTimeout(() => {
+      setToast({ show: false, mesrsage: '' })
+    }, 500)
+  }
+
   const LiveBlogItem = (
     <LiveBlogItemWrapper
       pined={pined}
@@ -96,10 +133,14 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
         e.stopPropagation()
       }}
     >
+      {toast.show && <LiveBlogToast message={toast.message} />}
       <LiveBlogTopActions
         pined={pined}
+        copyUrlHandler={copyUrlHandler}
         showLightbox={showLightboxClickedHandler}
         showAsLightbox={showAsLightbox}
+        id={article.id}
+        type={article.type}
       />
       <LiveBlogWrapper>
         <LiveBlog>
@@ -123,8 +164,10 @@ export default function LiveBlogItem({ pined, article, fetchImageBaseUrl }) {
 
   return (
     <Wrapper
+      id={`${liveblogItemId(article.id)}`}
       showAsLightbox={showAsLightbox}
       onClick={closeLighboxClickedHandler}
+      ref={wrapperRef}
     >
       {showAsLightbox && <GlobalStyles />}
       {LiveBlogItem}
