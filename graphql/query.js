@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 
 export const getFeedback = gql`
   query (
-    $formName: String!
-    $fieldName: String!
+    $form: ID!
+    $field: ID!
     $skip: Int
     $take: Int
     $order: FormResultOrderByInput!
@@ -11,8 +11,8 @@ export const getFeedback = gql`
     formResults(
       where: {
         AND: [
-          { form: { name: { equals: $formName } } }
-          { field: { name: { equals: $fieldName } } }
+          { form: { id: { equals: $form } } }
+          { field: { id: { equals: $field } } }
           { hidden: { not: { equals: true } } }
         ]
       }
