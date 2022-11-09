@@ -1,9 +1,11 @@
 import { truthValue, cancelValue } from './share'
-import { object, string, date } from 'yup'
+import { object, string, date, ref } from 'yup'
 
 export const basicFormSchema = object({
   form: string().required(),
   field: string().required(),
+  identifier: string().optional(),
+  uri: ref('identifier'),
 })
 
 export const feedbackFormSchema = basicFormSchema.concat(

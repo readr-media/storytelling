@@ -4,6 +4,7 @@ export const getFeedback = gql`
   query (
     $form: ID!
     $field: ID!
+    $uri: String
     $skip: Int
     $take: Int
     $order: FormResultOrderByInput!
@@ -13,6 +14,7 @@ export const getFeedback = gql`
         AND: [
           { form: { id: { equals: $form } } }
           { field: { id: { equals: $field } } }
+          { uri: { equals: $uri } }
           { hidden: { not: { equals: true } } }
         ]
       }
