@@ -1,25 +1,24 @@
 import { getQueryResult } from '../../utils/api/getQueryResult'
 import { getFeedback as getFeedbackQuery } from '../../graphql/query'
-import { object, number } from 'yup'
+import { number, object } from 'yup'
 import { truthValue, cancelValue } from './share'
-import {
-  likeFormName,
-  likeFieldName,
-  feedbackFormName,
-  feedbackFieldName,
-} from '../../utils/api/config'
+import { basicFormSchema } from './validationSchema'
 
 // get like and dislike amount
 
-export async function getLikeAndDislikeAmount() {
+const likeQuerySchema = basicFormSchema
+
+export async function getLikeAndDislikeAmount(req) {
   try {
-    const queryParams = {
-      formName: likeFormName,
-      fieldName: likeFieldName,
+    const params = await likeQuerySchema.validate(req.query, {
+      stripUnknown: true,
+    })
+
+    const queryParams = Object.assign(params, {
       order: {
         createdAt: 'desc',
       },
-    }
+    })
 
     const {
       data: { formResults },
@@ -54,14 +53,16 @@ export async function getLikeAndDislikeAmount() {
 
 // get feedback
 
-const feedbackQuerySchema = object({
-  skip: number().optional().integer().default(0),
-  take: number().when('skip', {
-    is: (val) => Number.isInteger(val) && val > 0,
-    then: number().default(10).required(),
-    otherwise: number().default(3).required(),
-  }),
-})
+const feedbackQuerySchema = basicFormSchema.concat(
+  object({
+    skip: number().optional().integer().default(0),
+    take: number().when('skip', {
+      is: (val) => Number.isInteger(val) && val > 0,
+      then: number().default(10).required(),
+      otherwise: number().default(3).required(),
+    }),
+  })
+)
 
 export async function getFeedback(req) {
   try {
@@ -70,8 +71,6 @@ export async function getFeedback(req) {
     })
 
     const queryParams = Object.assign(params, {
-      formName: feedbackFormName,
-      fieldName: feedbackFieldName,
       order: {
         createdAt: 'desc',
       },

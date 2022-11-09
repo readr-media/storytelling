@@ -27,7 +27,7 @@ async function handler(req, res) {
 
   // get like and dislike amount
   async function GET() {
-    const result = await getLikeAndDislikeAmount()
+    const result = await getLikeAndDislikeAmount(req)
 
     if (typeof result === 'string') {
       res.status(400).json({ message: result })
