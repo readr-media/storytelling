@@ -4,7 +4,7 @@ import { object, string, date, ref } from 'yup'
 export const basicFormSchema = object({
   form: string().required(),
   field: string().required(),
-  identifier: string().optional(),
+  identifier: string().optional().default(''),
   uri: ref('identifier'),
 })
 
