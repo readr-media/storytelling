@@ -1,5 +1,6 @@
 import { truthValue, cancelValue } from './share'
 import { object, string, date, ref } from 'yup'
+import { optionDelimiter } from './config'
 
 export const basicFormSchema = object({
   form: string().required(),
@@ -8,20 +9,22 @@ export const basicFormSchema = object({
   uri: ref('identifier'),
 })
 
-export const feedbackFormSchema = basicFormSchema.concat(
+const basicInputFormSchema = basicFormSchema.concat(
   object({
     name: string().required(),
     ip: string().required(),
     responseTime: date().required(),
+  })
+)
+
+export const feedbackFormSchema = basicInputFormSchema.concat(
+  object({
     userFeedback: string().required(), // need to transform into string so that Python subscriber could handle properly
   })
 )
 
-export const likeFormSchema = basicFormSchema.concat(
+export const likeFormSchema = basicInputFormSchema.concat(
   object({
-    name: string().required(),
-    ip: string().required(),
-    responseTime: date().required(),
     userFeedback: string()
       .transform((value) => {
         // need to transform into string expression so that Python subscriber could handle properly
@@ -34,6 +37,21 @@ export const likeFormSchema = basicFormSchema.concat(
         }
       })
       .nullable()
+      .defined(),
+  })
+)
+
+// will replace likeFormSchema
+export const optionFormSchema = basicInputFormSchema.concat(
+  object({
+    userFeedback: string()
+      .transform((value) => {
+        if (Array.isArray(value)) {
+          return value.join(optionDelimiter)
+        } else {
+          return ''
+        }
+      })
       .defined(),
   })
 )

@@ -1,8 +1,12 @@
 import { getQueryResult } from '../../utils/api/getQueryResult'
-import { getFeedback as getFeedbackQuery } from '../../graphql/query'
+import {
+  getFeedback as getFeedbackQuery,
+  getFieldOptions as getFieldOptionsQuery,
+} from '../../graphql/query'
 import { number, object } from 'yup'
 import { truthValue, cancelValue } from './share'
 import { basicFormSchema } from './validationSchema'
+import { optionDelimiter } from './config'
 
 // get like and dislike amount
 
@@ -61,6 +65,78 @@ export async function getLikeAndDislikeAmount(req) {
     return err.message
   }
 }
+
+// get option summary (will replace getLikeAndDislikeAmount)
+
+const optionQuerySchema = basicFormSchema
+
+/**
+ * @param {string} fieldId
+ * @returns {Promise<Record<string, number>>}
+ */
+async function getFieldOptions(fieldId) {
+  const options = {}
+  const {
+    data: { field },
+  } = await getQueryResult(getFieldOptionsQuery, {
+    field: fieldId,
+  })
+
+  if (field?.options?.length > 0) {
+    field.options.map((o) => {
+      const k = o.value
+      options[k] = 0
+    })
+  }
+
+  return options
+}
+
+export async function getOptionSummary(req) {
+  try {
+    const params = await optionQuerySchema.validate(req.query, {
+      stripUnknown: true,
+    })
+
+    const queryParams = Object.assign(params, {
+      order: {
+        createdAt: 'desc',
+      },
+    })
+
+    const {
+      data: { formResults },
+    } = await getQueryResult(getFeedbackQuery, queryParams)
+
+    const summary = await getFieldOptions(queryParams.field)
+
+    for (let resultObject of formResults) {
+      let result = resultObject.result
+
+      if (typeof result === 'string') {
+        const selected = result.split(optionDelimiter)
+
+        for (let s of selected) {
+          if (s in summary) {
+            summary[s] += 1
+          }
+        }
+      }
+    }
+
+    return summary
+  } catch (err) {
+    console.log(
+      JSON.stringify({
+        severity: 'ALERT',
+        message: 'Received error while getOptionSummary',
+        debugPayload: {
+          error: err.message,
+          stack: err.stack,
+        },
+      })
+    )
+
     return err.message
   }
 }

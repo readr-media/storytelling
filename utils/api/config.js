@@ -20,3 +20,6 @@ export const recaptchaScoreBoundary =
 export const corsOrigins = env.CORS_ORIGINS
   ? env.CORS_ORIGINS.split(delimiter)
   : ['http://localhost']
+
+// for option form
+export const optionDelimiter = '$$'
