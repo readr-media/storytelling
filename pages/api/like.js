@@ -6,7 +6,7 @@ import { addLikeOrDislike } from '../../utils/api/addDataToStorage'
 import { corsOrigins } from '../../utils/api/config'
 
 const cors = CORS({
-  methods: ['HEAD', 'PUT'],
+  methods: ['HEAD', 'PUT', 'GET'],
   origin: corsOrigins,
 })
 
