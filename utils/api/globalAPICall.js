@@ -17,6 +17,17 @@ export default async function globalAPICall(req, res, actions) {
     // run the action matching the request.method
     await actions[method]()
   } catch (err) {
+    console.log(
+      JSON.stringify({
+        severity: 'ALERT',
+        message: 'Received unexpected error',
+        debugPayload: {
+          error: err.message,
+          stack: err.stack,
+        },
+      })
+    )
+
     if (err instanceof CustomError) {
       res.status(err.code).json({ message: err.message })
     } else {

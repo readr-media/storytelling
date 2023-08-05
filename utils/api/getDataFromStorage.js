@@ -47,6 +47,20 @@ export async function getLikeAndDislikeAmount(req) {
 
     return amount
   } catch (err) {
+    console.log(
+      JSON.stringify({
+        severity: 'ALERT',
+        message: 'Received error while getLikeAndDislikeAmount',
+        debugPayload: {
+          error: err.message,
+          stack: err.stack,
+        },
+      })
+    )
+
+    return err.message
+  }
+}
     return err.message
   }
 }
@@ -83,6 +97,17 @@ export async function getFeedback(req) {
 
     return result
   } catch (err) {
+    console.log(
+      JSON.stringify({
+        severity: 'ALERT',
+        message: 'Received error while getFeedback',
+        debugPayload: {
+          error: err.message,
+          stack: err.stack,
+        },
+      })
+    )
+
     return err.message
   }
 }
