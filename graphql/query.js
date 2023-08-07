@@ -36,3 +36,16 @@ export const getFeedback = gql`
     }
   }
 `
+
+export const getFieldOptions = gql`
+  query ($field: ID!) {
+    field(where: { id: $field }) {
+      id
+      options {
+        id
+        name
+        value
+      }
+    }
+  }
+`

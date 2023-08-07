@@ -10,14 +10,35 @@ export default async function publishMessage(formSchema, jsonData) {
       stripUnknown: true,
     })
 
-    const messageId = await pubSubClient
+    await pubSubClient
       .topic(topicNameOrId)
       .publishMessage({ json: validateData })
 
-    console.log(`Message ${messageId} published.`)
+    console.log(
+      JSON.stringify({
+        severity: 'DEBUG',
+        message: 'Message published',
+        debugPayload: {
+          jsonData,
+          validateData,
+        },
+      })
+    )
+
     return true
   } catch (error) {
-    console.error(`Received error while publishing: ${error.message}`)
+    console.log(
+      JSON.stringify({
+        severity: 'ALERT',
+        message: 'Received error while publishing message',
+        debugPayload: {
+          jsonData,
+          error: error.message,
+          stack: error.stack,
+        },
+      })
+    )
+
     return error.message
   }
 }
