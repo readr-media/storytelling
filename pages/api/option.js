@@ -1,8 +1,8 @@
 import CORS from 'cors'
 import globalAPICall from '../../utils/api/globalAPICall'
 import { runMiddleware } from '../../utils/api/share'
-import { getLikeAndDislikeAmount } from '../../utils/api/getDataFromStorage'
-import { addLikeOrDislike } from '../../utils/api/addDataToStorage'
+import { getOptionSummary } from '../../utils/api/getDataFromStorage'
+import { addOption } from '../../utils/api/addDataToStorage'
 import { corsOrigins } from '../../utils/api/config'
 
 const cors = CORS({
@@ -16,7 +16,7 @@ async function handler(req, res) {
 
   async function PUT() {
     // add like/dislike to storage
-    const result = await addLikeOrDislike(req)
+    const result = await addOption(req)
 
     if (result === true) {
       res.status(200).json({})
@@ -27,7 +27,7 @@ async function handler(req, res) {
 
   // get like and dislike amount
   async function GET() {
-    const result = await getLikeAndDislikeAmount(req)
+    const result = await getOptionSummary(req)
 
     if (typeof result === 'string') {
       res.status(400).json({ message: result })
