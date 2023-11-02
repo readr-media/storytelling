@@ -109,11 +109,16 @@ export async function getOptionSummary(req) {
     } = await getQueryResult(getFeedbackQuery, queryParams)
 
     const summary = await getFieldOptions(queryParams.field)
+    // There might be many results with the same user,
+    // we should treat the latest one as valid result.
+    const nameList = new Set()
 
     for (let resultObject of formResults) {
       let result = resultObject.result
+      let name = resultObject.name
 
-      if (typeof result === 'string') {
+      if (typeof result === 'string' && nameList.has(name) === false) {
+        nameList.add(name)
         const selected = result.split(optionDelimiter)
 
         for (let s of selected) {
