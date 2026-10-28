@@ -1,5 +1,5 @@
 # https://docs.docker.com/samples/library/node/
-ARG NODE_VERSION=16.14.2
+ARG NODE_VERSION=24.22.1
 # https://github.com/Yelp/dumb-init/releases
 ARG DUMB_INIT_VERSION=1.2.2
 
@@ -8,7 +8,7 @@ FROM node:${NODE_VERSION}-alpine AS build
 ARG DUMB_INIT_VERSION
 WORKDIR /build
 
-RUN apk add --no-cache build-base python2 yarn && \
+RUN apk add --no-cache build-base yarn && \
     wget -O dumb-init -q https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 && \
     chmod +x dumb-init 
 ADD . /build
